@@ -4,7 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define SYNTAX_ERROR {free_arg(arg);return NULL;printf("SYNTAX ERROR\n");}
+#define SYNTAX_ERROR {printf("SYNTAX ERROR\n");free_arg(arg);return NULL;}
 
 typedef struct record {
     char **data; // 数据指针
@@ -160,17 +160,17 @@ int main(void) {
     Tables.head = NULL;
     Tables.tail = NULL;
     char *str = scan();
-    while (str != NULL) {
-        char **token = split(str, "\n");
-        argument *arg = parse(token);
-        if (arg != NULL) {
-            execute(arg);
-            free_arg(arg);
-        }
-        free(token);
-        free(str);
-        str = scan();
+    //while (str != NULL) {
+    char **token = split(str, "\n");
+    argument *arg = parse(token);
+    if (arg != NULL) {
+        execute(arg);
+        free_arg(arg);
     }
+    free(token);
+    free(str);
+    //str = scan();
+    //}
     Table *curr = Tables.head;
     while (curr != NULL) {
         Table *temp = curr;
@@ -254,6 +254,7 @@ argument *parse(char **token) {
         case SELECT:
             return parse_select(token);
         default:
+            printf("SYNTAX ERROR\n");
             return NULL;//未知语句
     }
 }
@@ -316,7 +317,7 @@ argument *parse_create(char **token) {
             if (str_cmp(token[idx + 2], "(") != 0 || str_cmp(token[idx + 4], ")") != 0) SYNTAX_ERROR
             for (int i = 0; token[idx + 3][i] != '\0'; ++i) {
                 if (!isdigit(token[idx + 3][i])) SYNTAX_ERROR
-            }
+            }//检查是否为数字
             strcat(token[idx + 1], token[idx + 3]);
             arg->field_type[arg->field_num] = token[idx + 1];
             idx += 5;
@@ -401,7 +402,6 @@ argument *parse_update(char **token) {
     //条件子句解析
     idx++;
     arg->con = (conditionClause *) malloc(sizeof(conditionClause));
-    init_con(arg->con);
     if (!condition_check(arg->con, token)) SYNTAX_ERROR
     return arg;
 }
@@ -459,7 +459,6 @@ argument *parse_select(char **token) {
     if (str_cmp(token[idx], "WHERE") == 0) {
         idx++;
         arg->con = (conditionClause *) malloc(sizeof(conditionClause));
-        init_con(arg->con);
         if (!condition_check(arg->con, token)) SYNTAX_ERROR
     }
     //解析ORDER BY
@@ -544,6 +543,7 @@ bool condition_check(conditionClause *con, char **token) {
 
 //条件子句解析
 bool condition_parse(conditionClause *con, char **token) {
+    init_con(con);
     con->num_of_operator = 0;
     con->num_of_clause = 0;
     bool have_read_not = false;
@@ -556,7 +556,6 @@ bool condition_parse(conditionClause *con, char **token) {
         } else if (str_cmp(token[idx], "(") == 0) {
             idx++;
             con->inner_clause[con->num_of_clause] = (conditionClause *) malloc(sizeof(conditionClause));
-            init_con(con->inner_clause[con->num_of_clause]);
             if (!condition_parse(con->inner_clause[con->num_of_clause++], token)) return false;
             have_read_not = false;
             have_read_operator = false;
@@ -570,7 +569,6 @@ bool condition_parse(conditionClause *con, char **token) {
             have_read_operator = true;
         } else {
             con->inner_clause[con->num_of_clause] = malloc(sizeof(conditionClause));
-            init_con(con->inner_clause[con->num_of_clause]);
             if (!atomic_clause_parse(con->inner_clause[con->num_of_clause++], token)) return false;
             have_read_not = false;
             have_read_operator = false;
@@ -581,6 +579,7 @@ bool condition_parse(conditionClause *con, char **token) {
 
 //检查并解析原子子句
 bool atomic_clause_parse(conditionClause *clause, char **token) {
+    init_con(clause);
     clause->inner_clause = NULL;
     clause->atomic_clause = (atomicClause *) malloc(sizeof(atomicClause));
     clause->atomic_clause->operator = NULL;
@@ -977,11 +976,11 @@ int execute_con(conditionClause *con, Record *record, Table *table) {
         if (con->not[i]) res[i] ^= 1;
     }
     int ans = res[0];
-    for (int i = 1; i < con->num_of_operator; ++i) {
+    for (int i = 0; i < con->num_of_operator; ++i) {
         if (str_cmp(con->logic_operator[i], "AND") == 0) {
-            ans &= res[i];
+            ans &= res[i + 1];
         } else {
-            ans |= res[i];
+            ans |= res[i + 1];
         }
     }
     return ans;

@@ -1,25 +1,22 @@
 
-\c:S5276»"<implicit conversion loses integer precision: 'int' to 'char'(¯Î€áýÿÿÿÿ8ºÆí×Ô1
-\c:S5276Å"<implicit conversion loses integer precision: 'int' to 'char'(Ê‡ìûÿÿÿÿ8ºÆí×Ô1
-qc:S1912Š"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ÄÿÏšýÿÿÿÿ8ÈÆí×Ô1
-lc:S1912"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ù›à˜8ÈÆí×Ô1
-tc:S3776Ÿ"TRefactor this function to reduce its Cognitive Complexity from 36 to the 25 allowed.(øÈÛüÿÿÿÿ8·ŽÃûÔ1
-lc:S134¾"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(à‹æ—ÿÿÿÿÿ8·ŽÃûÔ1
-oc:S3776ï"TRefactor this function to reduce its Cognitive Complexity from 32 to the 25 allowed.(‰°õ£8Òž×„Õ1
-oc:S3776¬"TRefactor this function to reduce its Cognitive Complexity from 46 to the 25 allowed.(Ûâž8áÏÇûÔ1
-…c:S5350Ä"eMake the type of this variable a pointer-to-const. The current type of "record" is "struct record *".(‹ë¡‹ýÿÿÿÿ8õÏÇûÔ1
-{c:S995Œ"\Make the type of this parameter a pointer-to-const. The current type of "value" is "char *".(ÏÑŠüÿÿÿÿ8÷ÏÇûÔ1
-xc:S995¯"^Make the type of this parameter a pointer-to-const. The current type of "arg" is "argument *".(¤Š»Ú8úÏÇûÔ1
-oc:S3776Þ"TRefactor this function to reduce its Cognitive Complexity from 65 to the 25 allowed.(ËûƒÍ8ýÏÇûÔ1
-†c:S995Þ"lMake the type of this parameter a pointer-to-const. The current type of "atomic_clause" is "atomicClause *".(ËûƒÍ8âù´„Õ1
-€c:S995Þ"fMake the type of this parameter a pointer-to-const. The current type of "record" is "struct record *".(ËûƒÍ8äù´„Õ1
-{c:S995¤"aMake the type of this parameter a pointer-to-const. The current type of "field_name" is "char *".(ˆÈÅÚ8ˆÐÇûÔ1
-~c:S995¤"dMake the type of this parameter a pointer-to-const. The current type of "table" is "struct table *".(ˆÈÅÚ8ˆÐÇûÔ1
-c:S836©"qThe left expression of the compound assignment is an uninitialized value. The computed value will also be garbage(‹¹ªëøÿÿÿÿ8†ÞÕžÕ1
-rc:S836®"SArray access (via field 'inner_clause') results in an undefined pointer dereference(Î†Ó‘ýÿÿÿÿ8‡ÞÕžÕ1
-tc:S836¹"UArray access (via field 'logic_operator') results in an undefined pointer dereference(¯í‡ºùÿÿÿÿ8‡ÞÕžÕ1
-mc:S836¼"SArray access (via field 'inner_clause') results in an undefined pointer dereference(ðâÍ‹8‡ÞÕžÕ1
-Jc:S836˜"+The left operand of '!=' is a garbage value(ë€æþÿÿÿÿ8‡ÞÕžÕ1
-Mc:S5488Ï"2Call to 'malloc' has an allocation size of 0 bytes(ùéà®8ºÁ¶…Õ1
-gc:S3519Ö"GOut of bound memory access (access exceeds upper limit of memory block)(ÌŠºûÿÿÿÿ8ìÂÎ„Õ1
-gc:S3519Ø"GOut of bound memory access (access exceeds upper limit of memory block)(²þ•˜ýÿÿÿÿ8ˆÓ±…Õ1
+\c:S5276»"<implicit conversion loses integer precision: 'int' to 'char'(¯Î€áýÿÿÿÿ8´‹×ŸÕ1
+\c:S5276Å"<implicit conversion loses integer precision: 'int' to 'char'(Ê‡ìûÿÿÿÿ8´‹×ŸÕ1
+qc:S1912‹"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ÄÿÏšýÿÿÿÿ8Å‹×ŸÕ1
+lc:S1912Ž"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ù›à˜8Å‹×ŸÕ1
+tc:S3776 "TRefactor this function to reduce its Cognitive Complexity from 36 to the 25 allowed.(øÈÛüÿÿÿÿ8Æ‹×ŸÕ1
+lc:S134¿"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(à‹æ—ÿÿÿÿÿ8Æ‹×ŸÕ1
+oc:S3776ð"TRefactor this function to reduce its Cognitive Complexity from 32 to the 25 allowed.(‰°õ£8Ë‹×ŸÕ1
+oc:S3776¬"TRefactor this function to reduce its Cognitive Complexity from 46 to the 25 allowed.(Ûâž8Ð‹×ŸÕ1
+…c:S5350Ã"eMake the type of this variable a pointer-to-const. The current type of "record" is "struct record *".(‹ë¡‹ýÿÿÿÿ8æ‹×ŸÕ1
+{c:S995‹"\Make the type of this parameter a pointer-to-const. The current type of "value" is "char *".(ÏÑŠüÿÿÿÿ8é‹×ŸÕ1
+xc:S995®"^Make the type of this parameter a pointer-to-const. The current type of "arg" is "argument *".(¤Š»Ú8ê‹×ŸÕ1
+oc:S3776Ý"TRefactor this function to reduce its Cognitive Complexity from 65 to the 25 allowed.(ËûƒÍ8í‹×ŸÕ1
+†c:S995Ý"lMake the type of this parameter a pointer-to-const. The current type of "atomic_clause" is "atomicClause *".(ËûƒÍ8ð‹×ŸÕ1
+€c:S995Ý"fMake the type of this parameter a pointer-to-const. The current type of "record" is "struct record *".(ËûƒÍ8ñ‹×ŸÕ1
+{c:S995£"aMake the type of this parameter a pointer-to-const. The current type of "field_name" is "char *".(ˆÈÅÚ8û‹×ŸÕ1
+~c:S995£"dMake the type of this parameter a pointer-to-const. The current type of "table" is "struct table *".(ˆÈÅÚ8û‹×ŸÕ1
+Xc:S3807ð"=Null pointer passed as 1st argument to string length function(¯Í„‰8¶øÞŸÕ1
+bc:S3519Õ"GOut of bound memory access (access exceeds upper limit of memory block)(”øÇ¥8Áà×ŸÕ1
+gc:S3519×"GOut of bound memory access (access exceeds upper limit of memory block)(­¡ØÄúÿÿÿÿ8Áà×ŸÕ1
+=c:S125£"Remove the commented out code.(Øô°™ýÿÿÿÿ8·øÞŸÕ1
+8c:S125¬"Remove the commented out code.(áÜÑÖ8·øÞŸÕ1
