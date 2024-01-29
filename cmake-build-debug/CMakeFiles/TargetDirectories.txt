@@ -1,0 +1,4 @@
+D:/CLion/SQL/cmake-build-debug/CMakeFiles/SQL.dir
+D:/CLion/SQL/cmake-build-debug/CMakeFiles/text.dir
+D:/CLion/SQL/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/CLion/SQL/cmake-build-debug/CMakeFiles/rebuild_cache.dir
