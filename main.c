@@ -4,7 +4,19 @@
 #include <string.h>
 #include <ctype.h>
 
-#define SYNTAX_ERROR {printf("SYNTAX ERROR\n");free_arg(arg);return NULL;}
+#define SYNTAX_ERROR {printf("SYNTAX ERROR\n");free(arg);return NULL;}
+
+#define SIZE_OF_STR 1000
+
+#define NUM_OF_FIELD 257
+
+#define NUM_OF_TOKEN 100
+
+#define SIZE_OF_NAME 35
+
+#define SIZE_OF_DATA 200
+
+#define SIZE_FOR_CON 50
 
 typedef struct record {
     char **data; // 数据指针
@@ -41,7 +53,7 @@ char *key_word[] = {"NULL", "INT", "CHAR", "CREATE", "TABLE", "PRIMARY", "KEY", 
                     "VALUES", "DELETE", "FROM", "WHERE", "UPDATE", "ORDER", "BY", "ASC", "DESC", "AND", "OR", "BETWEEN",
                     "IS", "SELECT"};
 
-int idx = 0;
+int idx = 0;//当前解析位置
 
 typedef struct {
     char *operator;
@@ -52,7 +64,7 @@ typedef struct conditionClause {
     atomicClause *atomic_clause;
     int num_of_operator;
     int num_of_clause;
-    int not[100];
+    int not[SIZE_FOR_CON];
     char **logic_operator;
     struct conditionClause **inner_clause;
 } conditionClause;
@@ -61,16 +73,16 @@ typedef struct {
     int type;
     char *table_name;
     int field_num;
-    char **field_name;
-    char **field_type;
+    char *field_name[NUM_OF_FIELD];
+    char *field_type[NUM_OF_FIELD];
     int value_num;
-    char **field_value;
-    int is_primary_key[257];
-    int is_unique[257];
-    int is_not_null[257];
+    char *field_value[NUM_OF_FIELD];
+    int is_primary_key[NUM_OF_FIELD];
+    int is_unique[NUM_OF_FIELD];
+    int is_not_null[NUM_OF_FIELD];
     int order_num;
-    char **order_by;
-    int order[257];
+    char *order_by[NUM_OF_FIELD];
+    int order[NUM_OF_FIELD];
     conditionClause *con;
 } argument;
 
@@ -146,8 +158,6 @@ void init_arg(argument *arg);
 
 void init_con(conditionClause *con);
 
-void free_arg(argument *arg);
-
 void free_con(conditionClause *clause);
 
 void free_record(Record *record, int num_of_data);
@@ -157,20 +167,23 @@ void free_table(Table *table);
 int str_cmp(const char *a, const char *b);
 
 int main(void) {
+    int num = 0;
     Tables.head = NULL;
     Tables.tail = NULL;
     char *str = scan();
-    //while (str != NULL) {
-    char **token = split(str, "\n");
-    argument *arg = parse(token);
-    if (arg != NULL) {
-        execute(arg);
-        free_arg(arg);
+    while (str != NULL) {
+        char **token = split(str, "\n");
+        idx = 0;
+        argument *arg = parse(token);
+        if (arg != NULL) {
+            execute(arg);
+            free(arg);
+        }
+        free(token);
+        free(str);
+        num++;
+        str = scan();
     }
-    free(token);
-    free(str);
-    //str = scan();
-    //}
     Table *curr = Tables.head;
     while (curr != NULL) {
         Table *temp = curr;
@@ -182,19 +195,29 @@ int main(void) {
 
 //读取一条语句并添加分隔符
 char *scan(void) {
-    char *str = (char *) malloc(1000 * sizeof(char));
+    char *str = (char *) malloc(SIZE_OF_STR * sizeof(char));
     char *p = str;
     char c = getchar();
+    //TODO 测试用
+    if (c == '$') {
+        free(str);
+        return NULL;
+    }
     bool is_quote = false;//是否在引号内
     bool is_escape = false;//是否转义
     bool is_empty = true;//读入是否为空
     while ((c != ';' || is_quote) && c != EOF) {
         if (!is_quote && (c == '\n' || c == '\t' || c == ' ')) c = DELIMITER;
-        if (c == ',' || c == ')' || c == '(') *p++ = DELIMITER;
+        if ((c == ',' || c == ')' || c == '(') && !is_quote) *p++ = DELIMITER;
         *p++ = c;
         is_empty = false;
-        if (c == '(') *p++ = DELIMITER;
+        if ((c == '(') && !is_quote) *p++ = DELIMITER;
         c = getchar();
+        //TODO 测试用
+        if (c == '$') {
+            free(str);
+            return NULL;
+        }
         if (c == '\'' && !is_escape) {
             is_quote = !is_quote;
         }
@@ -210,33 +233,6 @@ char *scan(void) {
     }
     *p = '\0';
     return str;
-}
-
-//初始化参数
-void init_arg(argument *arg) {
-    arg->table_name = NULL;
-    arg->field_num = 0;
-    arg->field_name = malloc(257 * sizeof(char *));
-    arg->field_type = malloc(257 * sizeof(char *));
-    arg->value_num = 0;
-    arg->field_value = malloc(257 * sizeof(char *));
-    memset(arg->is_primary_key, 0, 257 * sizeof(arg->is_primary_key[0]));
-    memset(arg->is_unique, 0, 257 * sizeof(arg->is_unique[0]));
-    memset(arg->is_not_null, 0, 257 * sizeof(arg->is_not_null[0]));
-    arg->order_num = 0;
-    arg->order_by = malloc(257 * sizeof(char *));
-    memset(arg->order, 0, 257 * sizeof(arg->order[0]));
-    arg->con = NULL;
-}
-
-//初始化条件子句
-void init_con(conditionClause *con) {
-    con->atomic_clause = NULL;
-    memset(con->not, 0, 100 * sizeof(con->not[0]));
-    con->inner_clause = malloc(100 * sizeof(conditionClause *));
-    con->logic_operator = malloc(100 * sizeof(char *));
-    con->num_of_operator = 0;
-    con->num_of_clause = 0;
 }
 
 //解析语句
@@ -261,7 +257,7 @@ argument *parse(char **token) {
 
 //分割字符串
 char **split(char *str, const char *delim) {
-    char **token = (char **) calloc(100, sizeof(char *));
+    char **token = (char **) malloc(sizeof(char *) * NUM_OF_TOKEN);
     char *p;
     int i = 0;
     p = strtok(str, delim);
@@ -433,7 +429,6 @@ argument *parse_select(char **token) {
     idx = 1;//当前解析位置
     if (str_cmp(token[1], "*") == 0) {
         arg->field_num = 0;
-        arg->field_name = NULL;
         idx++;
     }//全选
     else {
@@ -622,7 +617,7 @@ bool atomic_clause_parse(conditionClause *clause, char **token) {
 //检查字段名
 bool name_check(const char *name) {
     size_t len = strlen(name);
-    if (len > 32) return false;
+    if (len > 35) return false;
     for (int i = 0; i < len; ++i) {
         if (!isalpha(name[i]) && name[i] != '_') return false;
     }
@@ -639,39 +634,7 @@ int type_name_check(const char *type) {
     return 0;
 }
 
-//释放参数
-void free_arg(argument *arg) {
-    if (arg->field_name != NULL) {
-        free(arg->field_name);
-    }
-    if (arg->field_type != NULL) {
-        free(arg->field_type);
-    }
-    if (arg->field_value != NULL) {
-        free(arg->field_value);
-    }
-    if (arg->order_by != NULL) {
-        free(arg->order_by);
-    }
-    if (arg->con != NULL) {
-        free_con(arg->con);
-    }
-}
-
-//释放条件子句
-void free_con(conditionClause *clause) {
-    if (clause->atomic_clause != NULL) {
-        free(clause->atomic_clause);
-    }
-    if (clause->inner_clause != NULL) {
-        for (int i = 0; i < clause->num_of_clause; ++i) {
-            free_con(clause->inner_clause[i]);
-        }
-        free(clause);
-    }
-}
-
-
+//执行函数
 void execute(argument *arg) {
     switch (arg->type) {
         case CREATE: {
@@ -701,7 +664,8 @@ void execute(argument *arg) {
 
 void execute_create(argument *arg) {
     Table *table = (Table *) malloc(sizeof(Table));
-    table->name = arg->table_name;
+    table->name = malloc(sizeof(char) * SIZE_OF_NAME);
+    strcpy(table->name, arg->table_name);
     //检查表名是否重复
     if (Tables.head != NULL) {
         Table *p = Tables.head;
@@ -721,8 +685,8 @@ void execute_create(argument *arg) {
     table->is_unique = malloc(sizeof(int) * arg->field_num);
     int cnt = 0;
     for (int i = 0; i < arg->field_num; ++i) {
-        table->field_name[i] = malloc(sizeof(char) * 33);
-        table->field_type[i] = malloc(sizeof(char) * 33);
+        table->field_name[i] = malloc(sizeof(char) * SIZE_OF_NAME);
+        table->field_type[i] = malloc(sizeof(char) * SIZE_OF_NAME);
         strcpy(table->field_name[i], arg->field_name[i]);
         strcpy(table->field_type[i], arg->field_type[i]);
         table->is_not_null[i] = arg->is_not_null[i];
@@ -736,15 +700,7 @@ void execute_create(argument *arg) {
     table->tail = NULL;
     //检查主键是否唯一
     if (cnt != 1) {
-        for (int i = 0; i < arg->field_num; ++i) {
-            free(table->field_name[i]);
-            free(table->field_type[i]);
-        }
-        free(table->field_name);
-        free(table->field_type);
-        free(table->is_not_null);
-        free(table->is_unique);
-        free(table);
+        free_table(table);
         printf("ERROR\n");
         return;
     }
@@ -779,7 +735,7 @@ void execute_insert(argument *arg) {
             return;
         }
         //赋值
-        record->data[i] = malloc(sizeof(char) * 33);
+        record->data[i] = malloc(sizeof(char) * SIZE_OF_DATA);
         strcpy(record->data[i], arg->field_value[i]);
     }
     //向表中添加记录
@@ -834,18 +790,24 @@ void execute_update(argument *arg) {
     int cnt = 0;
     Record *record = find_record(arg, table);
     while (record != NULL) {
-        for (int i = 0; i < arg->value_num; ++i) {
-            int index_of_field = find_field(arg->field_name[i], table);
-            if (index_of_field == -1) {
+        int index_of_field[arg->field_num];
+        //查找字段
+        for (int i = 0; i < arg->field_num; ++i) {
+            index_of_field[i] = find_field(arg->field_name[i], table);
+            if (index_of_field[i] == -1) {
                 printf("ERROR\n");
                 return;
             }
-            if (!value_check(arg->field_value[i], table, index_of_field)) {
+            if (!value_check(arg->field_value[i], table, index_of_field[i])) {
                 printf("ERROR\n");
                 return;
             }
-            strcpy(record->data[index_of_field], arg->field_value[i]);
         }
+        //更新
+        for (int i = 0; i < arg->field_num; ++i) {
+            strcpy(record->data[index_of_field[i]], arg->field_value[i]);
+        }
+        cnt++;
         record = find_record(arg, NULL);
     }
     printf("%d RECORDS UPDATED\n", cnt);
@@ -857,7 +819,7 @@ void execute_select(argument *arg) {
         printf("ERROR\n");
         return;
     }
-    Record *records[200];
+    Record *records[NUM_OF_FIELD];
     int cnt = 0;
     records[cnt] = find_record(arg, table);
     while (records[cnt] != NULL) {
@@ -877,7 +839,7 @@ void execute_select(argument *arg) {
     sort(records, 0, cnt - 1, arg, table, comp);
     //输出
     //查询所有字段
-    if (arg->field_name == NULL) {
+    if (arg->field_num == 0) {
         for (int i = 0; i < table->field_num; ++i) {
             printf("%s\t", table->field_name[i]);
         }
@@ -904,6 +866,7 @@ void execute_select(argument *arg) {
     }
 }
 
+//检查字段值
 bool value_check(char *value, Table *table, int index_of_field) {
     //非空检验
     if ((table->is_not_null[index_of_field] || index_of_field == table->primary_key_index) &&
@@ -927,6 +890,7 @@ bool value_check(char *value, Table *table, int index_of_field) {
     return true;
 }
 
+//检查数据与类型是否匹配
 bool type_check(const char *value, const char *type) {
     if (str_cmp(type, "INT") == 0) {
         for (int i = 0; value[i] != '\0'; ++i) {
@@ -934,11 +898,12 @@ bool type_check(const char *value, const char *type) {
         }
     } else {
         int len = atoi(type + 4);
-        if (strlen(value) > len) return false;
+        if (strlen(value) - 2 > len) return false;//检查长度，不包括两个单引号
     }
     return true;
 }
 
+//查找表
 Table *find_table(argument *arg) {
     Table *table = Tables.head;
     while (table != NULL) {
@@ -951,12 +916,17 @@ Table *find_table(argument *arg) {
     return table;
 }
 
+//查找记录
 Record *find_record(argument *arg, Table *table) {
     static Record *curr;
+    static Table *temp;
     Record *ans = NULL;
-    if (table != NULL) curr = table->head;
+    if (table != NULL) {
+        curr = table->head;
+        temp = table;
+    }
     while (curr != NULL) {
-        if (execute_con(arg->con, curr, table)) {
+        if (execute_con(arg->con, curr, temp)) {
             ans = curr;
             curr = curr->next;
             break;
@@ -966,6 +936,7 @@ Record *find_record(argument *arg, Table *table) {
     return ans;
 }
 
+//执行条件子句
 int execute_con(conditionClause *con, Record *record, Table *table) {
     if (con == NULL) return 1;
     if (con->atomic_clause != NULL) return execute_atomic(con->atomic_clause, record, table);
@@ -986,6 +957,7 @@ int execute_con(conditionClause *con, Record *record, Table *table) {
     return ans;
 }
 
+//执行原子子句
 int execute_atomic(atomicClause *atomic_clause, Record *record, Table *table) {
     int index_of_field = find_field(atomic_clause->value[0], table);
     if (index_of_field == -1) return -1;
@@ -1056,6 +1028,7 @@ int execute_atomic(atomicClause *atomic_clause, Record *record, Table *table) {
     return -1;
 }
 
+//查找字段索引
 int find_field(char *field_name, Table *table) {
     for (int i = 0; i < table->field_num; ++i) {
         if (str_cmp(field_name, table->field_name[i]) == 0) {
@@ -1065,32 +1038,7 @@ int find_field(char *field_name, Table *table) {
     return -1;
 }
 
-void free_record(Record *record, int num_of_data) {
-    for (int i = 0; i < num_of_data; ++i) {
-        free(record->data[i]);
-    }
-    free(record->data);
-    free(record);
-}
-
-void free_table(Table *table) {
-    Record *record = table->head;
-    while (record != NULL) {
-        Record *temp = record;
-        record = record->next;
-        free_record(temp, table->field_num);
-    }
-    for (int i = 0; i < table->field_num; ++i) {
-        free(table->field_name[i]);
-        free(table->field_type[i]);
-    }
-    free(table->field_name);
-    free(table->field_type);
-    free(table->is_not_null);
-    free(table->is_unique);
-    free(table);
-}
-
+//比较函数
 int comp(Record *a, Record *b, argument *arg, Table *table, int index_of_order) {
     int index_of_field;
     if (index_of_order >= arg->order_num) index_of_field = table->primary_key_index;
@@ -1118,6 +1066,7 @@ void swap(Record *a, Record *b) {
     *b = temp;
 }
 
+//快速排序
 void sort(Record *arr[], int left, int right, argument *arg, Table *table,
           int (*comp)(Record *, Record *, argument *, Table *, int)) {
     if (left >= right) return;
@@ -1133,7 +1082,74 @@ void sort(Record *arr[], int left, int right, argument *arg, Table *table,
     sort(arr, i + 1, right, arg, table, comp);
 }
 
+//字符串比较,为NULL返回-2
 int str_cmp(const char *a, const char *b) {
     if (a == NULL || b == NULL) return -2;
     return strcmp(a, b);
 }
+
+//初始化参数
+void init_arg(argument *arg) {
+    arg->table_name = NULL;
+    arg->field_num = 0;
+    arg->value_num = 0;
+    memset(arg->is_primary_key, 0, NUM_OF_FIELD * sizeof(arg->is_primary_key[0]));
+    memset(arg->is_unique, 0, NUM_OF_FIELD * sizeof(arg->is_unique[0]));
+    memset(arg->is_not_null, 0, NUM_OF_FIELD * sizeof(arg->is_not_null[0]));
+    arg->order_num = 0;
+    memset(arg->order, 0, NUM_OF_FIELD * sizeof(arg->order[0]));
+    arg->con = NULL;
+}
+
+//初始化条件子句
+void init_con(conditionClause *con) {
+    con->atomic_clause = NULL;
+    memset(con->not, 0, SIZE_FOR_CON * sizeof(con->not[0]));
+    con->inner_clause = malloc(SIZE_FOR_CON * sizeof(conditionClause *));
+    con->logic_operator = malloc(SIZE_FOR_CON * sizeof(char *));
+    con->num_of_operator = 0;
+    con->num_of_clause = 0;
+}
+
+//释放记录
+void free_record(Record *record, int num_of_data) {
+    for (int i = 0; i < num_of_data; ++i) {
+        free(record->data[i]);
+    }
+    free(record->data);
+    free(record);
+}
+
+//释放表
+void free_table(Table *table) {
+    Record *record = table->head;
+    while (record != NULL) {
+        Record *temp = record;
+        record = record->next;
+        free_record(temp, table->field_num);
+    }
+    for (int i = 0; i < table->field_num; ++i) {
+        free(table->field_name[i]);
+        free(table->field_type[i]);
+    }
+    free(table->name);
+    free(table->field_name);
+    free(table->field_type);
+    free(table->is_not_null);
+    free(table->is_unique);
+    free(table);
+}
+
+//释放条件子句
+void free_con(conditionClause *clause) {
+    if (clause->atomic_clause != NULL) {
+        free(clause->atomic_clause);
+    }
+    if (clause->inner_clause != NULL) {
+        for (int i = 0; i < clause->num_of_clause; ++i) {
+            free_con(clause->inner_clause[i]);
+        }
+        free(clause);
+    }
+}
+
