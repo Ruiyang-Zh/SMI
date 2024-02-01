@@ -10,6 +10,8 @@
 
 #define NUM_OF_FIELD 257
 
+#define NUM_OF_RECORD 1024
+
 #define NUM_OF_TOKEN 100
 
 #define SIZE_OF_NAME 35
@@ -119,6 +121,8 @@ bool name_check(const char *name);
 
 int type_name_check(const char *type);
 
+int value_check(const char *value);
+
 //执行函数
 
 void execute(argument *arg);
@@ -137,13 +141,13 @@ int execute_con(conditionClause *con, Record *record, Table *table);
 
 int execute_atomic(atomicClause *atomic_clause, Record *record, Table *table);
 
-bool value_check(char *value, Table *table, int index_of_field);
+bool field_value_check(char *value, Table *table, int index_of_field);
 
 bool type_check(const char *value, const char *type);
 
 Table *find_table(argument *arg);
 
-Record *find_record(argument *arg, Table *table);
+Record *find_record(argument *arg, Table *table, int *error);
 
 int find_field(char *field_name, Table *table);
 
@@ -198,7 +202,6 @@ char *scan(void) {
     char *str = (char *) malloc(SIZE_OF_STR * sizeof(char));
     char *p = str;
     char c = getchar();
-    //TODO 测试用
     if (c == '$') {
         free(str);
         return NULL;
@@ -207,13 +210,13 @@ char *scan(void) {
     bool is_escape = false;//是否转义
     bool is_empty = true;//读入是否为空
     while ((c != ';' || is_quote) && c != EOF) {
+        if (is_quote && !is_escape && c == '\n') is_quote = false;
         if (!is_quote && (c == '\n' || c == '\t' || c == ' ')) c = DELIMITER;
         if ((c == ',' || c == ')' || c == '(') && !is_quote) *p++ = DELIMITER;
         *p++ = c;
-        is_empty = false;
+        if (c != '\n' && c != '\t' && c != ' ') is_empty = false;
         if ((c == '(') && !is_quote) *p++ = DELIMITER;
         c = getchar();
-        //TODO 测试用
         if (c == '$') {
             free(str);
             return NULL;
@@ -221,7 +224,7 @@ char *scan(void) {
         if (c == '\'' && !is_escape) {
             is_quote = !is_quote;
         }
-        if (c == '\\') {
+        if (c == '\\' && !is_escape) {
             is_escape = true;
         } else {
             is_escape = false;
@@ -292,42 +295,53 @@ argument *parse_create(char **token) {
     //开始括号内的解析
     if (str_cmp(token[3], "(") != 0) SYNTAX_ERROR
     idx = 4;
-    if (str_cmp(token[idx], ")") == 0) SYNTAX_ERROR//空表
-    bool have_read_comma = false;
+    //必选子句
+    if (!name_check(token[idx])) SYNTAX_ERROR
+    arg->field_name[arg->field_num] = token[idx++];
+    int type = type_name_check(token[idx]);
+    if (type == 0) SYNTAX_ERROR//未知字段类型
+    else if (type == CHAR) {
+        if (str_cmp(token[idx + 1], "(") != 0 || str_cmp(token[idx + 3], ")") != 0) SYNTAX_ERROR
+        for (int i = 0; token[idx + 2][i] != '\0'; ++i) {
+            if (!isdigit(token[idx + 2][i])) SYNTAX_ERROR
+        }//检查是否为数字
+        strcat(token[idx], token[idx + 2]);
+        arg->field_type[arg->field_num] = token[idx];
+        idx += 4;
+        get_limit(arg, token);
+        arg->field_num++;
+    } else {
+        arg->field_type[arg->field_num] = token[idx];
+        idx++;
+        get_limit(arg, token);
+        arg->field_num++;
+    }
+    //后续子句
     while (str_cmp(token[idx], ")") != 0) {
-        if (token[idx] == NULL) SYNTAX_ERROR//缺少右括号
-        if (str_cmp(token[idx], ",") == 0) {
-            if (have_read_comma) SYNTAX_ERROR
-            idx++;
-            have_read_comma = true;
-            continue;
-        }//跳过单个逗号
-        if (!name_check(token[idx])) SYNTAX_ERROR
-        arg->field_name[arg->field_num] = token[idx];
-        if (str_cmp(token[idx + 1], ")") == 0 || str_cmp(token[idx + 1], ",") == 0 ||
-            token[idx + 1] == NULL) SYNTAX_ERROR//缺少字段类型
-        int type = type_name_check(token[idx + 1]);
+        if (str_cmp(token[idx], ",") != 0) SYNTAX_ERROR
+        if (!name_check(token[idx + 1])) SYNTAX_ERROR
+        arg->field_name[arg->field_num] = token[idx + 1];
+        int type = type_name_check(token[idx + 2]);
         if (type == 0) SYNTAX_ERROR//未知字段类型
         else if (type == CHAR) {
-            if (token[idx + 2] == NULL || token[idx + 3] == NULL || token[idx + 4] == NULL) SYNTAX_ERROR
-            if (str_cmp(token[idx + 2], "(") != 0 || str_cmp(token[idx + 4], ")") != 0) SYNTAX_ERROR
-            for (int i = 0; token[idx + 3][i] != '\0'; ++i) {
-                if (!isdigit(token[idx + 3][i])) SYNTAX_ERROR
+            if (str_cmp(token[idx + 3], "(") != 0 || str_cmp(token[idx + 5], ")") != 0) SYNTAX_ERROR
+            for (int i = 0; token[idx + 4][i] != '\0'; ++i) {
+                if (!isdigit(token[idx + 4][i])) SYNTAX_ERROR
             }//检查是否为数字
-            strcat(token[idx + 1], token[idx + 3]);
-            arg->field_type[arg->field_num] = token[idx + 1];
-            idx += 5;
+            strcat(token[idx + 2], token[idx + 4]);
+            arg->field_type[arg->field_num] = token[idx + 2];
+            idx += 6;
             get_limit(arg, token);
             arg->field_num++;
-            have_read_comma = false;
         } else {
-            arg->field_type[arg->field_num] = token[idx + 1];
-            idx += 2;
+            arg->field_type[arg->field_num] = token[idx + 2];
+            idx += 3;
             get_limit(arg, token);
             arg->field_num++;
-            have_read_comma = false;
         }
     }
+    idx++;
+    if (token[idx] != NULL) SYNTAX_ERROR
     return arg;
 }
 
@@ -342,21 +356,20 @@ argument *parse_insert(char **token) {
     arg->value_num = 0;
     if (str_cmp(token[4], "(") != 0) SYNTAX_ERROR
     idx = 5;
-    if (str_cmp(token[idx], ")") == 0) SYNTAX_ERROR//空语句
-    bool have_read_comma = false;
+    if (!value_check(token[idx])) SYNTAX_ERROR
+    arg->field_value[arg->value_num] = token[idx];
+    arg->value_num++;
+    idx++;
     while (str_cmp(token[idx], ")") != 0) {
         if (token[idx] == NULL) SYNTAX_ERROR//缺少右括号
-        if (str_cmp(token[idx], ",") == 0) {
-            if (have_read_comma) SYNTAX_ERROR//连续逗号
-            idx++;
-            have_read_comma = true;
-            continue;
-        }//跳过单个逗号
+        if (str_cmp(token[idx++], ",") != 0) SYNTAX_ERROR
+        if (!value_check(token[idx])) SYNTAX_ERROR
         arg->field_value[arg->value_num] = token[idx];
         arg->value_num++;
         idx++;
-        have_read_comma = false;
     }
+    idx++;
+    if (token[idx] != NULL) SYNTAX_ERROR
     return arg;
 }
 
@@ -365,9 +378,6 @@ argument *parse_update(char **token) {
     argument *arg = (argument *) malloc(sizeof(argument));
     init_arg(arg);
     arg->type = UPDATE;
-    for (int i = 1; i <= 5; ++i) {
-        if (token[i] == NULL) SYNTAX_ERROR
-    }
     if (str_cmp(token[2], "SET") != 0) SYNTAX_ERROR
     if (!name_check(token[1])) SYNTAX_ERROR
     arg->table_name = token[1];
@@ -376,6 +386,7 @@ argument *parse_update(char **token) {
     if (!name_check(token[3])) SYNTAX_ERROR
     arg->field_name[arg->field_num] = token[3];
     if (str_cmp(token[4], "=") != 0) SYNTAX_ERROR
+    if (!value_check(token[5])) SYNTAX_ERROR
     arg->field_value[arg->field_num] = token[5];
     arg->field_num++;
     idx = 6;
@@ -385,10 +396,8 @@ argument *parse_update(char **token) {
             if (str_cmp(token[idx], ",") != 0) SYNTAX_ERROR
             if (!name_check(token[idx + 1])) SYNTAX_ERROR
             arg->field_name[arg->field_num] = token[idx + 1];
-            if (token[idx + 2] == NULL) SYNTAX_ERROR
             if (str_cmp(token[idx + 2], "=") != 0) SYNTAX_ERROR
-            if (token[idx + 3] == NULL) SYNTAX_ERROR
-            if (str_cmp(token[idx + 3], "WHERE") == 0) SYNTAX_ERROR
+            if (!value_check(token[idx + 3])) SYNTAX_ERROR
             arg->field_value[arg->field_num] = token[idx + 3];
             arg->field_num++;
             idx += 4;
@@ -396,9 +405,10 @@ argument *parse_update(char **token) {
         }
     }
     //条件子句解析
-    idx++;
+    idx++;//跳过WHERE
     arg->con = (conditionClause *) malloc(sizeof(conditionClause));
     if (!condition_check(arg->con, token)) SYNTAX_ERROR
+    if (token[idx] != NULL) SYNTAX_ERROR
     return arg;
 }
 
@@ -417,6 +427,7 @@ argument *parse_delete(char **token) {
     arg->con = (conditionClause *) malloc(sizeof(conditionClause));
     idx = 4;
     if (!condition_check(arg->con, token)) SYNTAX_ERROR
+    if (token[idx] != NULL) SYNTAX_ERROR
     return arg;
 }
 
@@ -433,11 +444,11 @@ argument *parse_select(char **token) {
     }//全选
     else {
         arg->field_num = 0;
+        if (!name_check(token[1])) SYNTAX_ERROR
         arg->field_name[arg->field_num] = token[1];
         arg->field_num++;//首个字段
         idx++;
         while (str_cmp(token[idx], "FROM") != 0) {
-            if (token[idx] == NULL) SYNTAX_ERROR//缺少FROM
             if (str_cmp(token[idx], ",") != 0) SYNTAX_ERROR
             if (!name_check(token[idx + 1])) SYNTAX_ERROR
             arg->field_name[arg->field_num] = token[idx + 1];
@@ -445,7 +456,7 @@ argument *parse_select(char **token) {
             idx += 2;
         }//后续字段
     }
-    idx++;//跳过FROM
+    if (str_cmp(token[idx++], "FROM") != 0) SYNTAX_ERROR
     if (!name_check(token[idx])) SYNTAX_ERROR
     arg->table_name = token[idx++];
     arg->con = NULL;
@@ -463,18 +474,14 @@ argument *parse_select(char **token) {
         idx += 2;
         if (token[idx] == NULL) SYNTAX_ERROR//缺少排序字段
         //首个排序字段
+        if (!name_check(token[idx])) SYNTAX_ERROR
         arg->order_by[arg->order_num] = token[idx];
-        if (token[idx + 1] != NULL) {
-            if (str_cmp(token[idx + 1], "DESC") == 0) {
-                arg->order[arg->order_num] = 1;
-                idx += 2;
-            } else if (str_cmp(token[idx + 1], "ASC") == 0) {
-                arg->order[arg->order_num] = 0;
-                idx += 2;
-            } else {
-                arg->order[arg->order_num] = 0;
-                idx++;
-            }
+        if (str_cmp(token[idx + 1], "DESC") == 0) {
+            arg->order[arg->order_num] = 1;
+            idx += 2;
+        } else if (str_cmp(token[idx + 1], "ASC") == 0) {
+            arg->order[arg->order_num] = 0;
+            idx += 2;
         } else {
             arg->order[arg->order_num] = 0;
             idx++;
@@ -483,7 +490,7 @@ argument *parse_select(char **token) {
         //后续排序字段
         while (token[idx] != NULL) {
             if (str_cmp(token[idx], ",") != 0) SYNTAX_ERROR
-            if (token[idx + 1] == NULL) SYNTAX_ERROR
+            if (!name_check(token[idx + 1])) SYNTAX_ERROR
             arg->order_by[arg->order_num] = token[idx + 1];
             if (str_cmp(token[idx + 2], "DESC") == 0) {
                 arg->order[arg->order_num] = 1;
@@ -498,6 +505,7 @@ argument *parse_select(char **token) {
             arg->order_num++;
         }
     }
+    if (token[idx] != NULL) SYNTAX_ERROR
     return arg;
 }
 
@@ -507,13 +515,13 @@ void get_limit(argument *arg, char **token) {
         arg->is_not_null[arg->field_num] = 1;
         idx += 2;
     }
-    if (str_cmp(token[idx], "UNIQUE") == 0) {
-        arg->is_unique[arg->field_num] = 1;
-        idx++;
-    }
     if (str_cmp(token[idx], "PRIMARY") == 0 && str_cmp(token[idx + 1], "KEY") == 0) {
         arg->is_primary_key[arg->field_num] = 1;
         idx += 2;
+    }
+    if (str_cmp(token[idx], "UNIQUE") == 0) {
+        arg->is_unique[arg->field_num] = 1;
+        idx++;
     }
 }
 
@@ -533,6 +541,7 @@ bool condition_check(conditionClause *con, char **token) {
     }
     if (bracket != 0) return false;
     if (!condition_parse(con, token)) return false;
+    if (con->num_of_clause == 0) return false;
     return true;
 }
 
@@ -543,30 +552,34 @@ bool condition_parse(conditionClause *con, char **token) {
     con->num_of_clause = 0;
     bool have_read_not = false;
     bool have_read_operator = false;
-    while (token[idx] != NULL && str_cmp(token[idx], "ORDER") != 0) {
+    bool have_read_clause = false;
+    while (token[idx] != NULL && str_cmp(token[idx], "ORDER") != 0 && str_cmp(token[idx], ")") != 0) {
         if (str_cmp(token[idx], "NOT") == 0) {
             con->not[con->num_of_clause] ^= 1;
             have_read_not = true;
             idx++;
         } else if (str_cmp(token[idx], "(") == 0) {
             idx++;
+            if (have_read_clause) return false;//两个连续子句之间无运算符
             con->inner_clause[con->num_of_clause] = (conditionClause *) malloc(sizeof(conditionClause));
             if (!condition_parse(con->inner_clause[con->num_of_clause++], token)) return false;
+            if (str_cmp(token[idx], ")") != 0) return false;
             have_read_not = false;
             have_read_operator = false;
-        } else if (str_cmp(token[idx], ")") == 0) {
-            if (have_read_not || have_read_operator) return false;
+            have_read_clause = true;
             idx++;
-            return true;
         } else if (str_cmp(token[idx], "AND") == 0 || str_cmp(token[idx], "OR") == 0) {
-            if (have_read_not || have_read_operator) return false;
+            if (have_read_not || have_read_operator) return false; //两个连续的运算符
             con->logic_operator[con->num_of_operator++] = token[idx++];
             have_read_operator = true;
+            have_read_clause = false;
         } else {
+            if (have_read_clause) return false;//两个连续子句之间无运算符
             con->inner_clause[con->num_of_clause] = malloc(sizeof(conditionClause));
             if (!atomic_clause_parse(con->inner_clause[con->num_of_clause++], token)) return false;
             have_read_not = false;
             have_read_operator = false;
+            have_read_clause = true;
         }
     }
     return true;
@@ -578,36 +591,32 @@ bool atomic_clause_parse(conditionClause *clause, char **token) {
     clause->inner_clause = NULL;
     clause->atomic_clause = (atomicClause *) malloc(sizeof(atomicClause));
     clause->atomic_clause->operator = NULL;
-    if (token[idx] == NULL) return false;
+    if (token[idx] == NULL) return false;//空
+    if (!value_check(token[idx]) && !name_check(token[idx])) return false;
     clause->atomic_clause->value[0] = token[idx++];
-    if (token[idx] == NULL) return false;
     if (str_cmp(token[idx], "=") == 0 || str_cmp(token[idx], "<>") == 0 || str_cmp(token[idx], "<") == 0 ||
         str_cmp(token[idx], ">") == 0 || str_cmp(token[idx], "<=") == 0 || str_cmp(token[idx], ">=") == 0) {
         clause->atomic_clause->operator = token[idx++];
-        if (token[idx] == NULL) return false;
+        if (!value_check(token[idx]) && !name_check(token[idx])) return false;
         clause->atomic_clause->value[1] = token[idx++];
     } else if (str_cmp(token[idx], "IS") == 0) {
-        if (str_cmp(token[idx + 1], "NOT") == 0) {
-            if (str_cmp(token[idx + 2], "NULL") == 0) {
-                clause->atomic_clause->operator = "IS NOT NULL";
-                idx += 3;
-            } else {
-                return false;
-            }
+        if (str_cmp(token[idx + 1], "NOT") == 0 && str_cmp(token[idx + 2], "NULL") == 0) {
+            clause->atomic_clause->operator = "IS NOT NULL";
+            idx += 3;
         } else if (str_cmp(token[idx + 1], "NULL") == 0) {
             clause->atomic_clause->operator = "IS NULL";
             idx += 2;
         } else {
             return false;
         }
-    } else if (str_cmp(token[idx], "BETWEEN") == 0) {
+    } else if (str_cmp(token[idx], "BETWEEN") == 0 && str_cmp(token[idx + 2], "AND") == 0) {
         clause->atomic_clause->operator = "BETWEEN";
-        if (token[idx + 1] == NULL) return false;
-        clause->atomic_clause->value[1] = token[idx + 1];
-        if (str_cmp(token[idx + 2], "AND") != 0) return false;
-        if (token[idx + 3] == NULL) return false;
-        clause->atomic_clause->value[2] = token[idx + 3];
-        idx += 4;
+        idx++;
+        if (!value_check(token[idx]) && !name_check(token[idx])) return false;
+        clause->atomic_clause->value[1] = token[idx++];
+        idx++;//跳过AND
+        if (!value_check(token[idx]) && !name_check(token[idx])) return false;
+        clause->atomic_clause->value[2] = token[idx++];
     } else {
         return false;
     }
@@ -616,6 +625,7 @@ bool atomic_clause_parse(conditionClause *clause, char **token) {
 
 //检查字段名
 bool name_check(const char *name) {
+    if (name == NULL) return false;
     size_t len = strlen(name);
     if (len > 35) return false;
     for (int i = 0; i < len; ++i) {
@@ -629,9 +639,32 @@ bool name_check(const char *name) {
 
 //检查字段类型名
 int type_name_check(const char *type) {
+    if (type == NULL) return false;
     if (str_cmp(type, "INT") == 0) return INT;
     if (type[0] == 'C' && type[1] == 'H' && type[2] == 'A' && type[3] == 'R') return CHAR;
-    return 0;
+    return false;
+}
+
+//检查值
+int value_check(const char *value) {
+    if (value == NULL) return 0;
+    if (strcmp(value, "NULL") == 0) return -1;
+    int len = strlen(value);
+    if (len <= 0) return 0;
+    if (len >= 2 && value[0] == '\'' && value[len - 1] == '\'') return CHAR;
+    else {
+        if (value[0] == '-') {
+            if (len == 1) return 0;
+            for (int i = 1; i < len; ++i) {
+                if (!isdigit(value[i])) return 0;
+            }
+        } else {
+            for (int i = 0; i < len; ++i) {
+                if (!isdigit(value[i])) return 0;
+            }
+        }
+    }
+    return INT;
 }
 
 //执行函数
@@ -683,11 +716,20 @@ void execute_create(argument *arg) {
     table->field_type = malloc(sizeof(char *) * arg->field_num);
     table->is_not_null = malloc(sizeof(int) * arg->field_num);
     table->is_unique = malloc(sizeof(int) * arg->field_num);
+    table->head = NULL;
+    table->tail = NULL;
     int cnt = 0;
     for (int i = 0; i < arg->field_num; ++i) {
         table->field_name[i] = malloc(sizeof(char) * SIZE_OF_NAME);
         table->field_type[i] = malloc(sizeof(char) * SIZE_OF_NAME);
         strcpy(table->field_name[i], arg->field_name[i]);
+        if (str_cmp(arg->field_type[i], "INT") != 0) {
+            if (atoi(arg->field_type[i] + 4) <= 0) {
+                printf("ERROR\n");
+                free_table(table);
+                return;
+            }
+        }
         strcpy(table->field_type[i], arg->field_type[i]);
         table->is_not_null[i] = arg->is_not_null[i];
         table->is_unique[i] = arg->is_unique[i];
@@ -696,8 +738,6 @@ void execute_create(argument *arg) {
             table->primary_key_index = i;
         }
     }
-    table->head = NULL;
-    table->tail = NULL;
     //检查主键是否唯一
     if (cnt != 1) {
         free_table(table);
@@ -729,7 +769,7 @@ void execute_insert(argument *arg) {
     record->data = (char **) malloc(sizeof(char *) * arg->value_num);
     for (int i = 0; i < arg->value_num; ++i) {
         //限制条件检验
-        if (!value_check(arg->field_value[i], table, i)) {
+        if (!field_value_check(arg->field_value[i], table, i)) {
             free_record(record, i);
             printf("ERROR\n");
             return;
@@ -759,7 +799,12 @@ void execute_delete(argument *arg) {
         return;
     }
     int cnt = 0;
-    Record *record = find_record(arg, table);
+    int error = 0;
+    Record *record = find_record(arg, table, &error);
+    if (error == -1) {
+        printf("ERROR\n");
+        return;
+    }
     while (record != NULL) {
         if (record->prev == NULL && record->next == NULL) {
             table->head = NULL;
@@ -776,7 +821,11 @@ void execute_delete(argument *arg) {
         }
         free_record(record, table->field_num);
         cnt++;
-        record = find_record(arg, NULL);
+        record = find_record(arg, NULL, &error);
+        if (error == -1) {
+            printf("ERROR\n");
+            return;
+        }
     }
     printf("%d RECORDS DELETED\n", cnt);
 }
@@ -787,28 +836,45 @@ void execute_update(argument *arg) {
         printf("ERROR\n");
         return;
     }
+    //查找记录
+    Record *records[NUM_OF_RECORD];
     int cnt = 0;
-    Record *record = find_record(arg, table);
-    while (record != NULL) {
-        int index_of_field[arg->field_num];
-        //查找字段
-        for (int i = 0; i < arg->field_num; ++i) {
-            index_of_field[i] = find_field(arg->field_name[i], table);
-            if (index_of_field[i] == -1) {
-                printf("ERROR\n");
-                return;
-            }
-            if (!value_check(arg->field_value[i], table, index_of_field[i])) {
-                printf("ERROR\n");
-                return;
-            }
-        }
-        //更新
-        for (int i = 0; i < arg->field_num; ++i) {
-            strcpy(record->data[index_of_field[i]], arg->field_value[i]);
-        }
+    int error = 0;
+    records[cnt] = find_record(arg, table, &error);
+    if (error == -1) {
+        printf("ERROR\n");
+        return;
+    }
+    while (records[cnt] != NULL) {
         cnt++;
-        record = find_record(arg, NULL);
+        records[cnt] = find_record(arg, NULL, &error);
+        if (error == -1) {
+            printf("ERROR\n");
+            return;
+        }
+    }
+    //查找待更新字段索引
+    int index_of_field[arg->field_num];
+    for (int i = 0; i < arg->field_num; ++i) {
+        index_of_field[i] = find_field(arg->field_name[i], table);
+        if (index_of_field[i] == -1) {
+            printf("ERROR\n");
+            return;
+        }
+    }
+    //更新
+    for (int i = 0; i < arg->field_num; ++i) {
+        if ((table->is_unique[index_of_field[i]] || index_of_field[i] == table->primary_key_index) && cnt > 1) {
+            printf("ERROR\n");
+            return;
+        }
+        if (!field_value_check(arg->field_value[i], table, index_of_field[i])) {
+            printf("ERROR\n");
+            return;
+        }
+        for (int j = 0; j < cnt; ++j) {
+            strcpy(records[j]->data[index_of_field[i]], arg->field_value[i]);
+        }
     }
     printf("%d RECORDS UPDATED\n", cnt);
 }
@@ -819,12 +885,21 @@ void execute_select(argument *arg) {
         printf("ERROR\n");
         return;
     }
-    Record *records[NUM_OF_FIELD];
+    Record *records[NUM_OF_RECORD];
     int cnt = 0;
-    records[cnt] = find_record(arg, table);
+    int error = 0;
+    records[cnt] = find_record(arg, table, &error);
+    if (error == -1) {
+        printf("ERROR\n");
+        return;
+    }
     while (records[cnt] != NULL) {
         cnt++;
-        records[cnt] = find_record(arg, NULL);
+        records[cnt] = find_record(arg, NULL, &error);
+        if (error == -1) {
+            printf("ERROR\n");
+            return;
+        }
     }
     printf("%d RECORDS FOUND\n", cnt);
     if (cnt == 0) return;
@@ -866,8 +941,8 @@ void execute_select(argument *arg) {
     }
 }
 
-//检查字段值
-bool value_check(char *value, Table *table, int index_of_field) {
+//检查插入的字段值
+bool field_value_check(char *value, Table *table, int index_of_field) {
     //非空检验
     if ((table->is_not_null[index_of_field] || index_of_field == table->primary_key_index) &&
         str_cmp(value, "NULL") == 0) {
@@ -877,7 +952,7 @@ bool value_check(char *value, Table *table, int index_of_field) {
     if (table->is_unique[index_of_field] || index_of_field == table->primary_key_index) {
         Record *curr = table->head;
         while (curr != NULL) {
-            if (str_cmp(value, curr->data[index_of_field]) == 0) {
+            if (str_cmp(value, curr->data[index_of_field]) == 0 && str_cmp(value, "NULL") != 0) {
                 return false;
             }
             curr = curr->next;
@@ -893,10 +968,19 @@ bool value_check(char *value, Table *table, int index_of_field) {
 //检查数据与类型是否匹配
 bool type_check(const char *value, const char *type) {
     if (str_cmp(type, "INT") == 0) {
-        for (int i = 0; value[i] != '\0'; ++i) {
-            if (!isdigit(value[i])) return false;
+        if (str_cmp(value, "NULL") == 0) return true;
+        if (value[0] == '-') {
+            if (strlen(value) == 1) return false;
+            for (int i = 1; i < strlen(value); ++i) {
+                if (!isdigit(value[i])) return false;
+            }
+        } else {
+            for (int i = 0; i < strlen(value); ++i) {
+                if (!isdigit(value[i])) return false;
+            }
         }
     } else {
+        if (str_cmp(value, "NULL")) return true;
         int len = atoi(type + 4);
         if (strlen(value) - 2 > len) return false;//检查长度，不包括两个单引号
     }
@@ -917,7 +1001,7 @@ Table *find_table(argument *arg) {
 }
 
 //查找记录
-Record *find_record(argument *arg, Table *table) {
+Record *find_record(argument *arg, Table *table, int *error) {
     static Record *curr;
     static Table *temp;
     Record *ans = NULL;
@@ -926,7 +1010,12 @@ Record *find_record(argument *arg, Table *table) {
         temp = table;
     }
     while (curr != NULL) {
-        if (execute_con(arg->con, curr, temp)) {
+        int res = execute_con(arg->con, curr, temp);
+        if (res == -1) {
+            *error = -1;
+            return NULL;//ERROR
+        }
+        if (res == 1) {
             ans = curr;
             curr = curr->next;
             break;
@@ -943,7 +1032,7 @@ int execute_con(conditionClause *con, Record *record, Table *table) {
     int res[con->num_of_clause];
     for (int i = 0; i < con->num_of_clause; ++i) {
         res[i] = execute_con(con->inner_clause[i], record, table);
-        if (res[i] == -1) return -1;
+        if (res[i] == -1) return -1;//ERROR
         if (con->not[i]) res[i] ^= 1;
     }
     int ans = res[0];
@@ -957,75 +1046,112 @@ int execute_con(conditionClause *con, Record *record, Table *table) {
     return ans;
 }
 
+//获取原子子句的可比较值，并返回类型
+int get_value(atomicClause *atomic_clause, Record *record, Table *table, char **value) {
+    int type[3];
+    int num_of_value = 2;
+    bool have_null = false;
+    if (str_cmp(atomic_clause->operator, "IS NULL") == 0 || str_cmp(atomic_clause->operator, "IS NOT NULL") == 0) {
+        num_of_value = 1;
+    } else if (str_cmp(atomic_clause->operator, "BETWEEN") == 0) num_of_value = 3;
+    for (int i = 0; i < num_of_value; ++i) {
+        type[i] = value_check(atomic_clause->value[i]);//INT/CHAR/NULL(-1)
+        if (type[i] == 0) {//field
+            int index_of_field = find_field(atomic_clause->value[i], table);
+            if (index_of_field == -1) return 0;//找不到字段
+            value[i] = record->data[index_of_field];
+            if (str_cmp(value[i], "NULL") == 0) have_null = true;
+            if (str_cmp(table->field_type[index_of_field], "INT") == 0) type[i] = INT;
+            else type[i] = CHAR;
+        } else {//const
+            value[i] = atomic_clause->value[i];
+        }
+    }
+    for (int i = 0; i < num_of_value - 1; ++i) {
+        if (type[i] == -1) {
+            have_null = true;
+            continue;
+        }
+        if (type[i] != type[i + 1]) return 0;//类型不匹配
+    }
+    if (have_null) return -1;
+    else return type[0];
+}
+
 //执行原子子句
 int execute_atomic(atomicClause *atomic_clause, Record *record, Table *table) {
-    int index_of_field = find_field(atomic_clause->value[0], table);
-    if (index_of_field == -1) return -1;
-    if (!type_check(atomic_clause->value[1], table->field_type[index_of_field])) return -1;//第一个值的类型检查
+    char *value[3];
+    int type = get_value(atomic_clause, record, table, value);
+    if (!type) return -1;//ERROR
     if (str_cmp(atomic_clause->operator, "=") == 0) {
-        if (str_cmp(record->data[index_of_field], atomic_clause->value[1]) == 0) return 1;
+        if (type == -1) return 0;//UNKNOWN
+        if (str_cmp(value[0], value[1]) == 0) return 1;
         else return 0;
     } else if (str_cmp(atomic_clause->operator, "<>") == 0) {
-        if (str_cmp(record->data[index_of_field], atomic_clause->value[1]) != 0) return 1;
+        if (type == -1) return 0;//UNKNOWN
+        if (str_cmp(value[0], value[1]) != 0) return 1;
         else return 0;
     } else if (str_cmp(atomic_clause->operator, "<") == 0) {
-        if (str_cmp(table->field_type[index_of_field], "INT") == 0) {
-            int a = atoi(record->data[index_of_field]);
-            int b = atoi(atomic_clause->value[1]);
+        if (type == -1) return 0;//UNKNOWN
+        if (type == INT) {
+            int a = atoi(value[0]);
+            int b = atoi(value[1]);
             return a < b;
         } else {
-            if (str_cmp(record->data[index_of_field], atomic_clause->value[1]) < 0) return 1;
+            if (str_cmp(value[0], value[1]) < 0) return 1;
             else return 0;
         }
     } else if (str_cmp(atomic_clause->operator, ">") == 0) {
-        if (str_cmp(table->field_type[index_of_field], "INT") == 0) {
-            int a = atoi(record->data[index_of_field]);
-            int b = atoi(atomic_clause->value[1]);
+        if (type == -1) return 0;//UNKNOWN
+        if (type == INT) {
+            int a = atoi(value[0]);
+            int b = atoi(value[1]);
             return a > b;
         } else {
-            if (str_cmp(record->data[index_of_field], atomic_clause->value[1]) > 0) return 1;
+            if (str_cmp(value[0], value[1]) > 0) return 1;
             else return 0;
         }
     } else if (str_cmp(atomic_clause->operator, "<=") == 0) {
-        if (str_cmp(table->field_type[index_of_field], "INT") == 0) {
-            int a = atoi(record->data[index_of_field]);
-            int b = atoi(atomic_clause->value[1]);
+        if (type == -1) return 0;//UNKNOWN
+        if (type == INT) {
+            int a = atoi(value[0]);
+            int b = atoi(value[1]);
             return a <= b;
         } else {
-            if (str_cmp(record->data[index_of_field], atomic_clause->value[1]) <= 0) return 1;
+            if (str_cmp(value[0], value[1]) <= 0) return 1;
             else return 0;
         }
     } else if (str_cmp(atomic_clause->operator, ">=") == 0) {
-        if (str_cmp(table->field_type[index_of_field], "INT") == 0) {
-            int a = atoi(record->data[index_of_field]);
-            int b = atoi(atomic_clause->value[1]);
+        if (type == -1) return 0;//UNKNOWN
+        if (type == INT) {
+            int a = atoi(value[0]);
+            int b = atoi(value[1]);
             return a >= b;
         } else {
-            if (str_cmp(record->data[index_of_field], atomic_clause->value[1]) >= 0) return 1;
+            if (str_cmp(value[0], value[1]) >= 0) return 1;
             else return 0;
         }
     } else if (str_cmp(atomic_clause->operator, "IS NULL") == 0) {
-        if (str_cmp(record->data[index_of_field], "NULL") == 0) return 1;
+        if (str_cmp(value[0], "NULL") == 0) return 1;
         else return 0;
     } else if (str_cmp(atomic_clause->operator, "IS NOT NULL") == 0) {
-        if (str_cmp(record->data[index_of_field], "NULL") != 0) return 1;
+        if (str_cmp(value[0], "NULL") != 0) return 1;
         else return 0;
     } else if (str_cmp(atomic_clause->operator, "BETWEEN") == 0) {
-        if (!type_check(atomic_clause->value[2], table->field_type[index_of_field])) return -1;
-        if (str_cmp(table->field_type[index_of_field], "INT") == 0) {
-            int a = atoi(record->data[index_of_field]);
-            int b = atoi(atomic_clause->value[1]);
-            int c = atoi(atomic_clause->value[2]);
+        if (type == -1) return 0;//UNKNOWN
+        if (type == INT) {
+            int a = atoi(value[0]);
+            int b = atoi(value[1]);
+            int c = atoi(value[2]);
             return a >= b && a <= c;
         } else {
-            if (!type_check(atomic_clause->value[2], table->field_type[index_of_field])) return -1;
-            if (str_cmp(record->data[index_of_field], atomic_clause->value[1]) >= 0 &&
-                str_cmp(record->data[index_of_field], atomic_clause->value[2]) <= 0)
+            if (str_cmp(value[0], value[1]) >= 0 &&
+                str_cmp(value[0], value[2]) <= 0)
                 return 1;
             else return 0;
         }
     }
-    return -1;
+    return -1;//ERROR
 }
 
 //查找字段索引
@@ -1043,18 +1169,23 @@ int comp(Record *a, Record *b, argument *arg, Table *table, int index_of_order) 
     int index_of_field;
     if (index_of_order >= arg->order_num) index_of_field = table->primary_key_index;
     else index_of_field = find_field(arg->order_by[index_of_order], table);
-    if (str_cmp(a->data[index_of_field], "NULL") == 0) return 1;
-    if (str_cmp(b->data[index_of_field], "NULL") == 0) return -1;
+    bool is_null_a = str_cmp(a->data[index_of_field], "NULL") == 0;
+    bool is_null_b = str_cmp(b->data[index_of_field], "NULL") == 0;
+    if (is_null_a && is_null_b) return comp(a, b, arg, table, index_of_order + 1);//下一轮比较
+    else if (is_null_a) return 1;
+    else if (is_null_b) return -1;
     if (str_cmp(table->field_type[index_of_field], "INT") == 0) {
         int int_a = atoi(a->data[index_of_field]);
         int int_b = atoi(b->data[index_of_field]);
         int cmp = (int_a > int_b) - (int_a < int_b);
-        if (cmp == 0) return comp(a, b, arg, table, index_of_order + 1);
+        if (cmp == 0 && index_of_field != table->primary_key_index)
+            return comp(a, b, arg, table, index_of_order + 1);//下一轮比较
         if (arg->order[index_of_order] == 1) return -cmp;
         else return cmp;
     } else {
         int cmp = str_cmp(a->data[index_of_field], b->data[index_of_field]);
-        if (cmp == 0) return comp(a, b, arg, table, index_of_order + 1);
+        if (cmp == 0 && index_of_field != table->primary_key_index)
+            return comp(a, b, arg, table, index_of_order + 1);//下一轮比较
         if (arg->order[index_of_order] == 1) return -cmp;
         else return cmp;
     }
@@ -1093,10 +1224,10 @@ void init_arg(argument *arg) {
     arg->table_name = NULL;
     arg->field_num = 0;
     arg->value_num = 0;
+    arg->order_num = 0;
     memset(arg->is_primary_key, 0, NUM_OF_FIELD * sizeof(arg->is_primary_key[0]));
     memset(arg->is_unique, 0, NUM_OF_FIELD * sizeof(arg->is_unique[0]));
     memset(arg->is_not_null, 0, NUM_OF_FIELD * sizeof(arg->is_not_null[0]));
-    arg->order_num = 0;
     memset(arg->order, 0, NUM_OF_FIELD * sizeof(arg->order[0]));
     arg->con = NULL;
 }
@@ -1152,4 +1283,3 @@ void free_con(conditionClause *clause) {
         free(clause);
     }
 }
-

@@ -146,5 +146,5 @@
 #define SYNTAX_ERROR {printf("SYNTAX ERROR\n");}
 
 int main(void){
-    SYNTAX_ERROR
+    printf("1\t1");
 }

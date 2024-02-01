@@ -1,23 +1,45 @@
 
-Oc:S1135É"4Complete the task associated to this "TODO" comment.(†ºİ•8¡ª¦£Õ1
-Oc:S1135Ø"4Complete the task associated to this "TODO" comment.(†ºİ•8Ä•©£Õ1
-\c:S5276È"<implicit conversion loses integer precision: 'int' to 'char'(¯Î€áıÿÿÿÿ8‡‘££Õ1
-\c:S5276×"<implicit conversion loses integer precision: 'int' to 'char'(Ê‡ìûÿÿÿÿ8µª¦£Õ1
-qc:S1912‡"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ÄÿÏšıÿÿÿÿ8Å‹×ŸÕ1
-lc:S1912Š"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ù›à˜8Å‹×ŸÕ1
-tc:S3776œ"TRefactor this function to reduce its Cognitive Complexity from 36 to the 25 allowed.(øÈÛüÿÿÿÿ8Æ‹×ŸÕ1
-lc:S134»"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(à‹æ—ÿÿÿÿÿ8Æ‹×ŸÕ1
-oc:S3776ì"TRefactor this function to reduce its Cognitive Complexity from 32 to the 25 allowed.(‰°õ£8Ë‹×ŸÕ1
-oc:S3776¨"TRefactor this function to reduce its Cognitive Complexity from 46 to the 25 allowed.(Ûâ8Ğ‹×ŸÕ1
-}c:S995™"^Make the type of this parameter a pointer-to-const. The current type of "arg" is "argument *".(·Õ—¶úÿÿÿÿ8«‹Ø¤Õ1
-…c:S5350—"eMake the type of this variable a pointer-to-const. The current type of "record" is "struct record *".(‹ë¡‹ıÿÿÿÿ8ë×ß§Õ1
-{c:S995æ"\Make the type of this parameter a pointer-to-const. The current type of "value" is "char *".(ÏÑŠüÿÿÿÿ8é‹×ŸÕ1
-xc:S995‹"^Make the type of this parameter a pointer-to-const. The current type of "arg" is "argument *".(¤Š»Ú8ÄŞ¤Õ1
-oc:S3776Á"TRefactor this function to reduce its Cognitive Complexity from 65 to the 25 allowed.(ËûƒÍ8í‹×ŸÕ1
-†c:S995Á"lMake the type of this parameter a pointer-to-const. The current type of "atomic_clause" is "atomicClause *".(ËûƒÍ8ğ‹×ŸÕ1
-€c:S995Á"fMake the type of this parameter a pointer-to-const. The current type of "record" is "struct record *".(ËûƒÍ8ñ‹×ŸÕ1
-{c:S995ˆ"aMake the type of this parameter a pointer-to-const. The current type of "field_name" is "char *".(ˆÈÅÚ8û‹×ŸÕ1
-~c:S995ˆ"dMake the type of this parameter a pointer-to-const. The current type of "table" is "struct table *".(ˆÈÅÚ8û‹×ŸÕ1
-Mc:S5488ª"2Call to 'malloc' has an allocation size of 0 bytes(ùéà®8í¬¬¨Õ1
-bc:S3519¸"GOut of bound memory access (access exceeds upper limit of memory block)(”øÇ¥8í¬¬¨Õ1
-gc:S3519º"GOut of bound memory access (access exceeds upper limit of memory block)(­¡ØÄúÿÿÿÿ8í¬¬¨Õ1
+\c:S5276Ì"<implicit conversion loses integer precision: 'int' to 'char'(¯Î€áıÿÿÿÿ8‡‘££Õ1
+\c:S5276Û"<implicit conversion loses integer precision: 'int' to 'char'(Ê‡ìûÿÿÿÿ8Ñü˜ÌÕ1
+>c:S1117Ä"$declaration shadows a local variable(Ñ¨î;8ì³ÂÓÕ1
+jc:S5276Œ"Jimplicit conversion loses integer precision: 'unsigned long long' to 'int'(ÁúÈ¡øÿÿÿÿ8»„¥ÎÕ1
+tc:S3776É"TRefactor this function to reduce its Cognitive Complexity from 31 to the 25 allowed.(¹Ü²şÿÿÿÿ8€½©ÖÕ1
+qc:S1912Š"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ÄÿÏšıÿÿÿÿ8Å‹×ŸÕ1
+lc:S1912"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ù›à˜8Å‹×ŸÕ1
+tc:S3776Ÿ"TRefactor this function to reduce its Cognitive Complexity from 36 to the 25 allowed.(øÈÛüÿÿÿÿ8Æ‹×ŸÕ1
+gc:S134É"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(ß´™ª8Æ‹×ŸÕ1
+oc:S3776³"TRefactor this function to reduce its Cognitive Complexity from 45 to the 25 allowed.(Ûâ8Ğ‹×ŸÕ1
+oc:S3776¥"TRefactor this function to reduce its Cognitive Complexity from 28 to the 25 allowed.(ºáÀ·8§£ÏõÕ1
+tc:S3776‰"TRefactor this function to reduce its Cognitive Complexity from 26 to the 25 allowed.(’Ÿ•²øÿÿÿÿ8áÌŒ×Õ1
+lc:S134“"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(¬âİûÿÿÿÿ8áÌŒ×Õ1
+lc:S134—"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(¬âİûÿÿÿÿ8áÌŒ×Õ1
+}c:S995º"^Make the type of this parameter a pointer-to-const. The current type of "arg" is "argument *".(·Õ—¶úÿÿÿÿ8¡ãøÕ1
+Qc:S1066×"1Merge this "if" statement with the enclosing one.(Áİ½§ùÿÿÿÿ8„–øøÕ1
+{c:S995±"\Make the type of this parameter a pointer-to-const. The current type of "value" is "char *".(™×àúÿÿÿÿ8™ìáøÕ1
+oc:S3776É"TRefactor this function to reduce its Cognitive Complexity from 28 to the 25 allowed.(ªå‡8šìáøÕ1
+lc:S134Ï"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(°æáÓøÿÿÿÿ8šìáøÕ1
+lc:S134Ó"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(°æáÓøÿÿÿÿ8šìáøÕ1
+xc:S995ß"^Make the type of this parameter a pointer-to-const. The current type of "arg" is "argument *".(¤Š»Ú8‚ÓçøÕ1
+‹c:S995š"lMake the type of this parameter a pointer-to-const. The current type of "atomic_clause" is "atomicClause *".(®å Šúÿÿÿÿ8 ìáøÕ1
+…c:S995š"fMake the type of this parameter a pointer-to-const. The current type of "record" is "struct record *".(®å Šúÿÿÿÿ8 ìáøÕ1
+oc:S3776º"TRefactor this function to reduce its Cognitive Complexity from 73 to the 25 allowed.(ËûƒÍ8¤ìáøÕ1
+{c:S995†	"aMake the type of this parameter a pointer-to-const. The current type of "field_name" is "char *".(ˆÈÅÚ8ªìáøÕ1
+~c:S995†	"dMake the type of this parameter a pointer-to-const. The current type of "table" is "struct table *".(ˆÈÅÚ8ªìáøÕ1
+Nc:S836á"41st function call argument is an uninitialized value(·–ì–8Ã›•õÕ1
+Sc:S836ı"41st function call argument is an uninitialized value(Í˜Äÿıÿÿÿÿ8Ã›•õÕ1
+bc:S3519‘"GOut of bound memory access (access exceeds upper limit of memory block)(”øÇ¥8«èøÕ1
+gc:S3519“"GOut of bound memory access (access exceeds upper limit of memory block)(­¡ØÄúÿÿÿÿ8«èøÕ1
+Nc:S836À"42nd function call argument is an uninitialized value(µÇ»ş8«èøÕ1
+Sc:S836Ä"42nd function call argument is an uninitialized value(ÇÈÇ€ÿÿÿÿÿ8«èøÕ1
+Sc:S836Ê"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8«èøÕ1
+Nc:S836Í"42nd function call argument is an uninitialized value(ÉÇ½—8«èøÕ1
+Sc:S836Ô"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8«èøÕ1
+Sc:S836×"42nd function call argument is an uninitialized value(„şÔ»şÿÿÿÿ8«èøÕ1
+Sc:S836Ş"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8«èøÕ1
+Sc:S836á"42nd function call argument is an uninitialized value(ÍÒÑïşÿÿÿÿ8«èøÕ1
+Sc:S836è"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8«èøÕ1
+Sc:S836ë"42nd function call argument is an uninitialized value(•–ÒÄûÿÿÿÿ8«èøÕ1
+Sc:S836ø"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8«èøÕ1
+Sc:S836ù"41st function call argument is an uninitialized value(‚«ë’ùÿÿÿÿ8íÿãøÕ1
+Sc:S836ü"42nd function call argument is an uninitialized value( £´ëÿÿÿÿÿ8«èøÕ1
+Nc:S836ı"42nd function call argument is an uninitialized value(Ä¡ßİ8íÿãøÕ1
