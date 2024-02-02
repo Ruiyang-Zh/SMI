@@ -906,7 +906,6 @@ void execute_update(argument *arg) {
     else printf("ERROR\n");
 }
 
-//TODO 有问题
 void execute_select(argument *arg) {
     Table *table = find_table(arg);
     if (table == NULL) {
@@ -1257,14 +1256,12 @@ int comp(Record *a, Record *b, argument *arg, Table *table, int index_of_order) 
     }
 }
 
-//TODO 有问题
 void swap(Record **a, Record **b) {
     Record *temp = *a;
     *a = *b;
     *b = temp;
 }
 
-//TODO 有问题，直接交换了两条记录在表中的位置，造成数据丢失，应当只是交换records中指针指向的内容
 //快速排序
 void sort(Record *arr[], int left, int right, argument *arg, Table *table,
           int (*comp)(Record *, Record *, argument *, Table *, int)) {
