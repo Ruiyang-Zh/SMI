@@ -141,9 +141,13 @@ int execute_con(conditionClause *con, Record *record, Table *table);
 
 int execute_atomic(atomicClause *atomic_clause, Record *record, Table *table);
 
-bool field_value_check(char *value, Table *table, int index_of_field);
+bool record_check(Record *record, Table *table, int index_of_field);
+
+bool field_check(char *value, Table *table, int index_of_field);
 
 bool type_check(const char *value, const char *type);
+
+void record_cpy(Record *des, Record *src, int field_num);
 
 Table *find_table(argument *arg);
 
@@ -215,7 +219,7 @@ char *scan(void) {
         if ((c == ',' || c == ')' || c == '(') && !is_quote) *p++ = DELIMITER;
         *p++ = c;
         if (c != '\n' && c != '\t' && c != ' ') is_empty = false;
-        if ((c == '(') && !is_quote) *p++ = DELIMITER;
+        if ((c == '(' || c == ')' || c == ',') && !is_quote) *p++ = DELIMITER;
         c = getchar();
         if (c == '$') {
             free(str);
@@ -356,14 +360,14 @@ argument *parse_insert(char **token) {
     arg->value_num = 0;
     if (str_cmp(token[4], "(") != 0) SYNTAX_ERROR
     idx = 5;
-    if (!value_check(token[idx])) SYNTAX_ERROR
+    //TODO if (!value_check(token[idx])) SYNTAX_ERROR
     arg->field_value[arg->value_num] = token[idx];
     arg->value_num++;
     idx++;
     while (str_cmp(token[idx], ")") != 0) {
         if (token[idx] == NULL) SYNTAX_ERROR//缺少右括号
         if (str_cmp(token[idx++], ",") != 0) SYNTAX_ERROR
-        if (!value_check(token[idx])) SYNTAX_ERROR
+        //TODO if (!value_check(token[idx])) SYNTAX_ERROR
         arg->field_value[arg->value_num] = token[idx];
         arg->value_num++;
         idx++;
@@ -386,7 +390,7 @@ argument *parse_update(char **token) {
     if (!name_check(token[3])) SYNTAX_ERROR
     arg->field_name[arg->field_num] = token[3];
     if (str_cmp(token[4], "=") != 0) SYNTAX_ERROR
-    if (!value_check(token[5])) SYNTAX_ERROR
+    //TODO if (!value_check(token[5])) SYNTAX_ERROR
     arg->field_value[arg->field_num] = token[5];
     arg->field_num++;
     idx = 6;
@@ -397,7 +401,7 @@ argument *parse_update(char **token) {
             if (!name_check(token[idx + 1])) SYNTAX_ERROR
             arg->field_name[arg->field_num] = token[idx + 1];
             if (str_cmp(token[idx + 2], "=") != 0) SYNTAX_ERROR
-            if (!value_check(token[idx + 3])) SYNTAX_ERROR
+            //TODO if (!value_check(token[idx + 3])) SYNTAX_ERROR
             arg->field_value[arg->field_num] = token[idx + 3];
             arg->field_num++;
             idx += 4;
@@ -768,15 +772,15 @@ void execute_insert(argument *arg) {
     Record *record = (Record *) malloc(sizeof(Record));
     record->data = (char **) malloc(sizeof(char *) * arg->value_num);
     for (int i = 0; i < arg->value_num; ++i) {
-        //限制条件检验
-        if (!field_value_check(arg->field_value[i], table, i)) {
-            free_record(record, i);
-            printf("ERROR\n");
-            return;
-        }
         //赋值
         record->data[i] = malloc(sizeof(char) * SIZE_OF_DATA);
         strcpy(record->data[i], arg->field_value[i]);
+        //限制条件检验
+        if (!field_check(arg->field_value[i], table, i)) {
+            free_record(record, i + 1);
+            printf("ERROR\n");
+            return;
+        }
     }
     //向表中添加记录
     if (table->head == NULL) {
@@ -838,47 +842,71 @@ void execute_update(argument *arg) {
     }
     //查找记录
     Record *records[NUM_OF_RECORD];
+    Record *backups[NUM_OF_RECORD];
     int cnt = 0;
-    int error = 0;
+    int error = 0;//错误
     records[cnt] = find_record(arg, table, &error);
     if (error == -1) {
         printf("ERROR\n");
         return;
     }
     while (records[cnt] != NULL) {
+        backups[cnt] = malloc(sizeof(Record *));
+        record_cpy(backups[cnt], records[cnt], table->field_num);//备份
         cnt++;
         records[cnt] = find_record(arg, NULL, &error);
-        if (error == -1) {
-            printf("ERROR\n");
-            return;
+        if (error == -1) break;
+    }
+    if (error == -1) {
+        for (int i = 0; i < cnt; ++i) {
+            free_record(backups[i], table->field_num);
         }
+        printf("ERROR\n");
+        return;
     }
     //查找待更新字段索引
     int index_of_field[arg->field_num];
     for (int i = 0; i < arg->field_num; ++i) {
         index_of_field[i] = find_field(arg->field_name[i], table);
         if (index_of_field[i] == -1) {
-            printf("ERROR\n");
-            return;
+            error = -1;
+            break;
         }
+    }
+    if (error == -1) {
+        for (int i = 0; i < cnt; ++i) {
+            free_record(backups[i], table->field_num);
+        }
+        printf("ERROR\n");
+        return;
     }
     //更新
-    for (int i = 0; i < arg->field_num; ++i) {
-        if ((table->is_unique[index_of_field[i]] || index_of_field[i] == table->primary_key_index) && cnt > 1) {
-            printf("ERROR\n");
-            return;
+    for (int i = 0; i < cnt; ++i) {
+        for (int j = 0; j < arg->field_num; ++j) {
+            strcpy(records[i]->data[index_of_field[j]], arg->field_value[j]);
+            if (!record_check(records[i], table, index_of_field[j])) {
+                error = -1;
+                break;
+            }
         }
-        if (!field_value_check(arg->field_value[i], table, index_of_field[i])) {
-            printf("ERROR\n");
-            return;
-        }
-        for (int j = 0; j < cnt; ++j) {
-            strcpy(records[j]->data[index_of_field[i]], arg->field_value[i]);
+        //错误恢复
+        if (error == -1) {
+            for (int m = 0; m <= i; ++m) {
+                for (int n = 0; n < arg->field_num; ++n) {
+                    strcpy(records[m]->data[index_of_field[n]], backups[m]->data[index_of_field[n]]);
+                }
+            }
+            break;
         }
     }
-    printf("%d RECORDS UPDATED\n", cnt);
+    for (int i = 0; i < cnt; ++i) {
+        free_record(backups[i], table->field_num);
+    }
+    if (!error) printf("%d RECORDS UPDATED\n", cnt);
+    else printf("ERROR\n");
 }
 
+//TODO 有问题
 void execute_select(argument *arg) {
     Table *table = find_table(arg);
     if (table == NULL) {
@@ -941,8 +969,42 @@ void execute_select(argument *arg) {
     }
 }
 
-//检查插入的字段值
-bool field_value_check(char *value, Table *table, int index_of_field) {
+//检查当前记录的字段值
+bool record_check(Record *record, Table *table, int index_of_field) {
+    //字段类型检验
+    if (!type_check(record->data[index_of_field], table->field_type[index_of_field])) {
+        return false;
+    }
+    //非空检验
+    if ((table->is_not_null[index_of_field] || index_of_field == table->primary_key_index) &&
+        str_cmp(record->data[index_of_field], "NULL") == 0) {
+        return false;
+    }
+    //唯一性检验
+    if (table->is_unique[index_of_field] || index_of_field == table->primary_key_index) {
+        if (str_cmp(record->data[index_of_field], "NULL") == 0) return true;
+        Record *curr = record->next;
+        while (curr != NULL) {
+            if (str_cmp(record->data[index_of_field], curr->data[index_of_field]) == 0) {
+                return false;
+            }
+            curr = curr->next;
+        }
+        curr = record->prev;
+        while (curr != NULL) {
+            if (str_cmp(record->data[index_of_field], curr->data[index_of_field]) == 0) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool field_check(char *value, Table *table, int index_of_field) {
+    //字段类型检验
+    if (!type_check(value, table->field_type[index_of_field])) {
+        return false;
+    }
     //非空检验
     if ((table->is_not_null[index_of_field] || index_of_field == table->primary_key_index) &&
         str_cmp(value, "NULL") == 0) {
@@ -950,17 +1012,14 @@ bool field_value_check(char *value, Table *table, int index_of_field) {
     }
     //唯一性检验
     if (table->is_unique[index_of_field] || index_of_field == table->primary_key_index) {
+        if (str_cmp(value, "NULL") == 0) return true;
         Record *curr = table->head;
         while (curr != NULL) {
-            if (str_cmp(value, curr->data[index_of_field]) == 0 && str_cmp(value, "NULL") != 0) {
+            if (str_cmp(value, curr->data[index_of_field]) == 0) {
                 return false;
             }
             curr = curr->next;
         }
-    }
-    //字段类型检验
-    if (!type_check(value, table->field_type[index_of_field])) {
-        return false;
     }
     return true;
 }
@@ -980,9 +1039,11 @@ bool type_check(const char *value, const char *type) {
             }
         }
     } else {
-        if (str_cmp(value, "NULL")) return true;
-        int len = atoi(type + 4);
-        if (strlen(value) - 2 > len) return false;//检查长度，不包括两个单引号
+        if (str_cmp(value, "NULL") == 0) return true;
+        int len1 = atoi(type + 4);
+        int len2 = strlen(value);
+        if (value[0] != '\'' || value[len2 - 1] != '\'') return false;
+        if (len2 - 2 > len1) return false;//检查长度，不包括两个单引号
     }
     return true;
 }
@@ -1044,6 +1105,14 @@ int execute_con(conditionClause *con, Record *record, Table *table) {
         }
     }
     return ans;
+}
+
+void record_cpy(Record *des, Record *src, int field_num) {
+    des->data = (char **) malloc(field_num * sizeof(char *));
+    for (int i = 0; i < field_num; ++i) {
+        des->data[i] = malloc(SIZE_OF_DATA * sizeof(char));
+        strcpy(des->data[i], src->data[i]);
+    }
 }
 
 //获取原子子句的可比较值，并返回类型
@@ -1191,12 +1260,14 @@ int comp(Record *a, Record *b, argument *arg, Table *table, int index_of_order) 
     }
 }
 
+//TODO 有问题
 void swap(Record *a, Record *b) {
     Record temp = *a;
     *a = *b;
     *b = temp;
 }
 
+//TODO 有问题，直接交换了两条记录在表中的位置，造成数据丢失，应当只是交换records中指针指向的内容
 //快速排序
 void sort(Record *arr[], int left, int right, argument *arg, Table *table,
           int (*comp)(Record *, Record *, argument *, Table *, int)) {
