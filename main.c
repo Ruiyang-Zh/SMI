@@ -1137,10 +1137,7 @@ int get_value(atomicClause *atomic_clause, Record *record, Table *table, char **
         }
     }
     for (int i = 0; i < num_of_value - 1; ++i) {
-        if (type[i] == -1) {
-            have_null = true;
-            continue;
-        }
+        if (type[i] == -1 || type[i + 1] == -1) continue;
         if (type[i] != type[i + 1]) return 0;//类型不匹配
     }
     if (have_null) return -1;
@@ -1261,8 +1258,8 @@ int comp(Record *a, Record *b, argument *arg, Table *table, int index_of_order) 
 }
 
 //TODO 有问题
-void swap(Record *a, Record *b) {
-    Record temp = *a;
+void swap(Record **a, Record **b) {
+    Record *temp = *a;
     *a = *b;
     *b = temp;
 }
@@ -1277,9 +1274,9 @@ void sort(Record *arr[], int left, int right, argument *arg, Table *table,
     while (i < j) {
         while (i < j && comp(arr[j], pivot, arg, table, 0) >= 0) j--;
         while (i < j && comp(arr[i], pivot, arg, table, 0) <= 0) i++;
-        if (i < j) swap(arr[i], arr[j]);
+        if (i < j) swap(&arr[i], &arr[j]);
     }
-    swap(arr[left], arr[i]);
+    swap(&arr[left], &arr[i]);
     sort(arr, left, i - 1, arg, table, comp);
     sort(arr, i + 1, right, arg, table, comp);
 }

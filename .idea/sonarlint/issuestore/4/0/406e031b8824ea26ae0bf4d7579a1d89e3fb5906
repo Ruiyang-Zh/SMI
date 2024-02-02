@@ -4,8 +4,8 @@ Oc:S1135ò"4Complete the task associated to this "TODO" comment.(¦ƒš§8ı«ŸÖ1
 Oc:S1135‰"4Complete the task associated to this "TODO" comment.(¥‰è§8÷äŸÖ1
 Oc:S1135”"4Complete the task associated to this "TODO" comment.(…®©¨8øäŸÖ1
 Tc:S1135"4Complete the task associated to this "TODO" comment.(ŸØ§›ûÿÿÿÿ8éªË®Ö1
-Tc:S1135ï	"4Complete the task associated to this "TODO" comment.(ŸØ§›ûÿÿÿÿ8Ì‰Ø®Ö1
-Tc:S1135ö	"4Complete the task associated to this "TODO" comment.(¡›ÁÆøÿÿÿÿ8Ì‰Ø®Ö1
+Tc:S1135ì	"4Complete the task associated to this "TODO" comment.(ŸØ§›ûÿÿÿÿ8Ì‰Ø®Ö1
+Tc:S1135ó	"4Complete the task associated to this "TODO" comment.(¡›ÁÆøÿÿÿÿ8Ì‰Ø®Ö1
 \c:S5276Ğ"<implicit conversion loses integer precision: 'int' to 'char'(¯Î€áıÿÿÿÿ8‡‘££Õ1
 \c:S5276ß"<implicit conversion loses integer precision: 'int' to 'char'(Ê‡ìûÿÿÿÿ8Ñü˜ÌÕ1
 >c:S1117È"$declaration shadows a local variable(Ñ¨î;8ì³ÂÓÕ1
@@ -34,25 +34,25 @@ xc:S995œ"^Make the type of this parameter a pointer-to-const. The current ty
 }c:S995Ö"cMake the type of this parameter a pointer-to-const. The current type of "src" is "struct record *".(ÄŸÑ–8À”€­Ö1
 ‹c:S995ß"lMake the type of this parameter a pointer-to-const. The current type of "atomic_clause" is "atomicClause *".(®å Šúÿÿÿÿ8 ìáøÕ1
 …c:S995ß"fMake the type of this parameter a pointer-to-const. The current type of "record" is "struct record *".(®å Šúÿÿÿÿ8 ìáøÕ1
-oc:S3776ÿ"TRefactor this function to reduce its Cognitive Complexity from 73 to the 25 allowed.(ËûƒÍ8¤ìáøÕ1
-{c:S995Ë	"aMake the type of this parameter a pointer-to-const. The current type of "field_name" is "char *".(ˆÈÅÚ8ªìáøÕ1
-~c:S995Ë	"dMake the type of this parameter a pointer-to-const. The current type of "table" is "struct table *".(ˆÈÅÚ8ÊÊ³¬Ö1
+oc:S3776ü"TRefactor this function to reduce its Cognitive Complexity from 73 to the 25 allowed.(ËûƒÍ8¤ìáøÕ1
+{c:S995È	"aMake the type of this parameter a pointer-to-const. The current type of "field_name" is "char *".(ˆÈÅÚ8ªìáøÕ1
+~c:S995È	"dMake the type of this parameter a pointer-to-const. The current type of "table" is "struct table *".(ˆÈÅÚ8ÊÊ³¬Ö1
 bc:S3519Î"GOut of bound memory access (access exceeds upper limit of memory block)(”øÇ¥8ØéÚ¬Ö1
 gc:S3519Ğ"GOut of bound memory access (access exceeds upper limit of memory block)(­¡ØÄúÿÿÿÿ8ØéÚ¬Ö1
-Nc:S836…	"42nd function call argument is an uninitialized value(µÇ»ş8ˆº¯¢Ö1
-Sc:S836‰	"42nd function call argument is an uninitialized value(ÇÈÇ€ÿÿÿÿÿ8ØéÚ¬Ö1
-Sc:S836	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ˆº¯¢Ö1
-Nc:S836’	"42nd function call argument is an uninitialized value(ÉÇ½—8ØéÚ¬Ö1
-Sc:S836™	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ØéÚ¬Ö1
-Sc:S836œ	"42nd function call argument is an uninitialized value(„şÔ»şÿÿÿÿ8ØéÚ¬Ö1
-Sc:S836£	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ØéÚ¬Ö1
-Sc:S836¦	"42nd function call argument is an uninitialized value(ÍÒÑïşÿÿÿÿ8ÚéÚ¬Ö1
-Sc:S836­	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ÚéÚ¬Ö1
-Sc:S836°	"42nd function call argument is an uninitialized value(•–ÒÄûÿÿÿÿ8ÚéÚ¬Ö1
-Sc:S836½	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ÚéÚ¬Ö1
-Sc:S836¾	"41st function call argument is an uninitialized value(‚«ë’ùÿÿÿÿ8ÚéÚ¬Ö1
-Sc:S836Á	"42nd function call argument is an uninitialized value( £´ëÿÿÿÿÿ8ÚéÚ¬Ö1
-Nc:S836Â	"42nd function call argument is an uninitialized value(Ä¡ßİ8ÚéÚ¬Ö1
+Nc:S836‚	"42nd function call argument is an uninitialized value(µÇ»ş8ˆº¯¢Ö1
+Sc:S836†	"42nd function call argument is an uninitialized value(ÇÈÇ€ÿÿÿÿÿ8ØéÚ¬Ö1
+Sc:S836Œ	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ˆº¯¢Ö1
+Nc:S836	"42nd function call argument is an uninitialized value(ÉÇ½—8ØéÚ¬Ö1
+Sc:S836–	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ØéÚ¬Ö1
+Sc:S836™	"42nd function call argument is an uninitialized value(„şÔ»şÿÿÿÿ8ØéÚ¬Ö1
+Sc:S836 	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ØéÚ¬Ö1
+Sc:S836£	"42nd function call argument is an uninitialized value(ÍÒÑïşÿÿÿÿ8ÚéÚ¬Ö1
+Sc:S836ª	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ÚéÚ¬Ö1
+Sc:S836­	"42nd function call argument is an uninitialized value(•–ÒÄûÿÿÿÿ8ÚéÚ¬Ö1
+Sc:S836º	"41st function call argument is an uninitialized value(­½ÚÕøÿÿÿÿ8ÚéÚ¬Ö1
+Sc:S836»	"41st function call argument is an uninitialized value(‚«ë’ùÿÿÿÿ8ÚéÚ¬Ö1
+Sc:S836¾	"42nd function call argument is an uninitialized value( £´ëÿÿÿÿÿ8ÚéÚ¬Ö1
+Nc:S836¿	"42nd function call argument is an uninitialized value(Ä¡ßİ8ÚéÚ¬Ö1
 8c:S125ë"Remove the commented out code.(¦ƒš§8¦úÇÖ1
 8c:S125ò"Remove the commented out code.(¦ƒš§8ãµÉÖ1
 8c:S125‰"Remove the commented out code.(¥‰è§8’ªËÖ1
