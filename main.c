@@ -206,10 +206,6 @@ char *scan(void) {
     char *str = (char *) malloc(SIZE_OF_STR * sizeof(char));
     char *p = str;
     char c = getchar();
-    if (c == '$') {
-        free(str);
-        return NULL;
-    }
     bool is_quote = false;//是否在引号内
     bool is_escape = false;//是否转义
     bool is_empty = true;//读入是否为空
@@ -221,10 +217,6 @@ char *scan(void) {
         if (c != '\n' && c != '\t' && c != ' ') is_empty = false;
         if ((c == '(' || c == ')' || c == ',') && !is_quote) *p++ = DELIMITER;
         c = getchar();
-        if (c == '$') {
-            free(str);
-            return NULL;
-        }
         if (c == '\'' && !is_escape) {
             is_quote = !is_quote;
         }
