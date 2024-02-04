@@ -39,39 +39,45 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = D$:/CLion/SQL/cmake-build-debug/
+cmake_ninja_workdir = D$:/JetBrains/CLionProjects/SQL/cmake-build-debug/
 # =============================================================================
-# Object build statements for EXECUTABLE target SQL
+# Object build statements for EXECUTABLE target smi
 
 
 #############################################
-# Order-only phony target for SQL
+# Order-only phony target for smi
 
-build cmake_object_order_depends_target_SQL: phony || CMakeFiles/SQL.dir
+build cmake_object_order_depends_target_smi: phony || CMakeFiles/smi.dir
 
-build CMakeFiles/SQL.dir/main.c.obj: C_COMPILER__SQL_unscanned_Debug D$:/CLion/SQL/main.c || cmake_object_order_depends_target_SQL
-  DEP_FILE = CMakeFiles\SQL.dir\main.c.obj.d
+build CMakeFiles/smi.dir/smi.c.obj: C_COMPILER__smi_unscanned_Debug D$:/JetBrains/CLionProjects/SQL/smi.c || cmake_object_order_depends_target_smi
+  DEP_FILE = CMakeFiles\smi.dir\smi.c.obj.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\SQL.dir
-  OBJECT_FILE_DIR = CMakeFiles\SQL.dir
+  OBJECT_DIR = CMakeFiles\smi.dir
+  OBJECT_FILE_DIR = CMakeFiles\smi.dir
+
+build CMakeFiles/smi.dir/main.c.obj: C_COMPILER__smi_unscanned_Debug D$:/JetBrains/CLionProjects/SQL/main.c || cmake_object_order_depends_target_smi
+  DEP_FILE = CMakeFiles\smi.dir\main.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\smi.dir
+  OBJECT_FILE_DIR = CMakeFiles\smi.dir
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target SQL
+# Link build statements for EXECUTABLE target smi
 
 
 #############################################
-# Link the executable SQL.exe
+# Link the executable smi.exe
 
-build SQL.exe: C_EXECUTABLE_LINKER__SQL_Debug CMakeFiles/SQL.dir/main.c.obj
+build smi.exe: C_EXECUTABLE_LINKER__smi_Debug CMakeFiles/smi.dir/smi.c.obj CMakeFiles/smi.dir/main.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
-  OBJECT_DIR = CMakeFiles\SQL.dir
+  OBJECT_DIR = CMakeFiles\smi.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_FILE = SQL.exe
-  TARGET_IMPLIB = libSQL.dll.a
-  TARGET_PDB = SQL.exe.dbg
+  TARGET_FILE = smi.exe
+  TARGET_IMPLIB = libsmi.dll.a
+  TARGET_PDB = smi.exe.dbg
 
 # =============================================================================
 # Object build statements for EXECUTABLE target text
@@ -82,7 +88,7 @@ build SQL.exe: C_EXECUTABLE_LINKER__SQL_Debug CMakeFiles/SQL.dir/main.c.obj
 
 build cmake_object_order_depends_target_text: phony || CMakeFiles/text.dir
 
-build CMakeFiles/text.dir/text.c.obj: C_COMPILER__text_unscanned_Debug D$:/CLion/SQL/text.c || cmake_object_order_depends_target_text
+build CMakeFiles/text.dir/text.c.obj: C_COMPILER__text_unscanned_Debug D$:/JetBrains/CLionProjects/SQL/text.c || cmake_object_order_depends_target_text
   DEP_FILE = CMakeFiles\text.dir\text.c.obj.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\text.dir
@@ -111,7 +117,7 @@ build text.exe: C_EXECUTABLE_LINKER__text_Debug CMakeFiles/text.dir/text.c.obj
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\CLion\SQL\cmake-build-debug && D:\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D D:\JetBrains\CLionProjects\SQL\cmake-build-debug && D:\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -122,7 +128,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\CLion\SQL\cmake-build-debug && D:\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe --regenerate-during-build -SD:\CLion\SQL -BD:\CLion\SQL\cmake-build-debug"
+  COMMAND = cmd.exe /C "cd /D D:\JetBrains\CLionProjects\SQL\cmake-build-debug && D:\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe --regenerate-during-build -SD:\JetBrains\CLionProjects\SQL -BD:\JetBrains\CLionProjects\SQL\cmake-build-debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -132,7 +138,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build SQL: phony SQL.exe
+build smi: phony smi.exe
 
 build text: phony text.exe
 
@@ -142,9 +148,9 @@ build text: phony text.exe
 # =============================================================================
 
 #############################################
-# Folder: D:/CLion/SQL/cmake-build-debug
+# Folder: D:/JetBrains/CLionProjects/SQL/cmake-build-debug
 
-build all: phony SQL.exe text.exe
+build all: phony smi.exe text.exe
 
 # =============================================================================
 # Built-in targets
@@ -153,14 +159,14 @@ build all: phony SQL.exe text.exe
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | CMakeCache.txt CMakeFiles/3.27.8/CMakeCCompiler.cmake CMakeFiles/3.27.8/CMakeRCCompiler.cmake CMakeFiles/3.27.8/CMakeSystem.cmake D$:/CLion/SQL/CMakeLists.txt D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeCInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeGenericSystem.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeInitializeConfigs.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeLanguageInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeRCInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInitialize.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/CMakeCommonCompilerMacros.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/GNU-C.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/GNU.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU-C-ABI.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU-C.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-Initialize.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-windres.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/WindowsPaths.cmake
+build build.ninja: RERUN_CMAKE | CMakeCache.txt CMakeFiles/3.27.8/CMakeCCompiler.cmake CMakeFiles/3.27.8/CMakeRCCompiler.cmake CMakeFiles/3.27.8/CMakeSystem.cmake D$:/JetBrains/CLionProjects/SQL/CMakeLists.txt D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeCInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeGenericSystem.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeInitializeConfigs.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeLanguageInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeRCInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInitialize.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/CMakeCommonCompilerMacros.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/GNU-C.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/GNU.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU-C-ABI.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU-C.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-Initialize.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-windres.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/WindowsPaths.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build CMakeCache.txt CMakeFiles/3.27.8/CMakeCCompiler.cmake CMakeFiles/3.27.8/CMakeRCCompiler.cmake CMakeFiles/3.27.8/CMakeSystem.cmake D$:/CLion/SQL/CMakeLists.txt D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeCInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeGenericSystem.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeInitializeConfigs.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeLanguageInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeRCInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInitialize.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/CMakeCommonCompilerMacros.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/GNU-C.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/GNU.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU-C-ABI.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU-C.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-Initialize.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-windres.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/WindowsPaths.cmake: phony
+build CMakeCache.txt CMakeFiles/3.27.8/CMakeCCompiler.cmake CMakeFiles/3.27.8/CMakeRCCompiler.cmake CMakeFiles/3.27.8/CMakeSystem.cmake D$:/JetBrains/CLionProjects/SQL/CMakeLists.txt D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeCInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeCommonLanguageInclude.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeGenericSystem.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeInitializeConfigs.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeLanguageInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeRCInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInformation.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/CMakeSystemSpecificInitialize.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/CMakeCommonCompilerMacros.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/GNU-C.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Compiler/GNU.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU-C-ABI.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU-C.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-GNU.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-Initialize.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows-windres.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/Windows.cmake D$:/JetBrains/CLion/bin/cmake/win/x64/share/cmake-3.27/Modules/Platform/WindowsPaths.cmake: phony
 
 
 #############################################

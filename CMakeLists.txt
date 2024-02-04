@@ -3,6 +3,8 @@ project(SQL C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(SQL main.c)
+add_executable(smi smi.c
+        smi.h
+        main.c)
 
 add_executable(text text.c)
