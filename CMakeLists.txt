@@ -3,8 +3,10 @@ project(SQL C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(smi smi.c
-        smi.h
-        main.c)
+set(CMAKE_C_COMPILER "D:/Codespace/SDKs/C-Cpp/mingw64/bin/gcc.exe")
 
-add_executable(text text.c)
+add_executable(main
+        src/main.c
+        src/smi.h
+        src/smi.c
+)

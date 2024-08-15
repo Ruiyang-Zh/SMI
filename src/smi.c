@@ -1,16 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
 #include "smi.h"
 
 //全局变量
-
-enum key_word_index {
-    INT = 1, CHAR, CREATE, TABLE, PRIMARY, KEY, NOT, UNIQUE, INSERT, INTO, VALUES, DELETE, FROM, WHERE, UPDATE, ORDER,
-    BY, ASC, DESC, AND, OR, BETWEEN, IS, SELECT
-};
 
 char *key_word[] = {"NULL", "INT", "CHAR", "CREATE", "TABLE", "PRIMARY", "KEY", "NOT", "UNIQUE", "INSERT", "INTO",
                     "VALUES", "DELETE", "FROM", "WHERE", "UPDATE", "ORDER", "BY", "ASC", "DESC", "AND", "OR", "BETWEEN",

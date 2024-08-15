@@ -5,8 +5,11 @@
 #ifndef SQL_SMI_H
 #define SQL_SMI_H
 
-
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 #define SIZE_OF_STR 1000
 
@@ -91,7 +94,10 @@ extern int idx;//记录当前解析到的token索引
 
 extern char *key_word[];//关键字数组
 
-extern enum key_word_index;//关键字索引
+enum {
+    INT = 1, CHAR, CREATE, TABLE, PRIMARY, KEY, NOT, UNIQUE, INSERT, INTO, VALUES, DELETE, FROM, WHERE, UPDATE, ORDER,
+    BY, ASC, DESC, AND, OR, BETWEEN, IS, SELECT
+};//关键字索引
 
 //读取函数
 

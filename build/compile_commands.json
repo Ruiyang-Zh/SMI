@@ -1,0 +1,14 @@
+[
+{
+  "directory": "D:/Codespace/Code/C/SQL/build",
+  "command": "D:\\Codespace\\SDKs\\C-Cpp\\mingw64\\bin\\gcc.exe   -g -std=gnu11 -o CMakeFiles\\main.dir\\src\\main.c.obj -c D:\\Codespace\\Code\\C\\SQL\\src\\main.c",
+  "file": "D:/Codespace/Code/C/SQL/src/main.c",
+  "output": "CMakeFiles/main.dir/src/main.c.obj"
+},
+{
+  "directory": "D:/Codespace/Code/C/SQL/build",
+  "command": "D:\\Codespace\\SDKs\\C-Cpp\\mingw64\\bin\\gcc.exe   -g -std=gnu11 -o CMakeFiles\\main.dir\\src\\smi.c.obj -c D:\\Codespace\\Code\\C\\SQL\\src\\smi.c",
+  "file": "D:/Codespace/Code/C/SQL/src/smi.c",
+  "output": "CMakeFiles/main.dir/src/smi.c.obj"
+}
+]

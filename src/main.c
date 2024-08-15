@@ -1,5 +1,4 @@
 #include "smi.h"
-#include <stdlib.h>
 
 int main(void) {
     int num = 0;

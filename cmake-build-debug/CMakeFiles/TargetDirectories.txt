@@ -1,4 +1,4 @@
-D:/JetBrains/CLionProjects/SQL/cmake-build-debug/CMakeFiles/smi.dir
-D:/JetBrains/CLionProjects/SQL/cmake-build-debug/CMakeFiles/text.dir
-D:/JetBrains/CLionProjects/SQL/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/JetBrains/CLionProjects/SQL/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+D:/ProgrammingFiles/myProjects/C/CLionProjects/SQL/cmake-build-debug/CMakeFiles/smi.dir
+D:/ProgrammingFiles/myProjects/C/CLionProjects/SQL/cmake-build-debug/CMakeFiles/text.dir
+D:/ProgrammingFiles/myProjects/C/CLionProjects/SQL/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/ProgrammingFiles/myProjects/C/CLionProjects/SQL/cmake-build-debug/CMakeFiles/rebuild_cache.dir

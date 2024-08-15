@@ -1,0 +1,40 @@
+
+uc:S1135¥"4Complete the task associated to this "TODO" comment.(¦ƒš§8ı«ŸÖ1J$561a8565-0f8a-4093-b480-3698c2380eaf
+uc:S1135¬"4Complete the task associated to this "TODO" comment.(¦ƒš§8ı«ŸÖ1J$a27721de-f355-4300-a071-ac194b27fa2b
+uc:S1135Â"4Complete the task associated to this "TODO" comment.(¥‰è§8÷äŸÖ1J$c9969a26-4616-4508-8d87-6e862bb9b2f0
+uc:S1135Í"4Complete the task associated to this "TODO" comment.(…®©¨8øäŸÖ1J$a09b0863-d5e7-4484-94b1-29bfe0fc2202
+Ôc:S819"”call to undeclared library function 'malloc' with type 'void *(unsigned long long)'; ISO C99 and later do not support implicit function declarations(­ı¤¶8²ú€Œ2J$a82f3a94-68f3-4169-848f-cc179e553c71
+ªc:S819"fcall to undeclared function 'getchar'; ISO C99 and later do not support implicit function declarations(¯Î€áıÿÿÿÿ8”²ú€Œ2J$58ade74b-4b3a-4e44-b5f5-bc5a2fab59c7
+c:S5276"<implicit conversion loses integer precision: 'int' to 'char'(¯Î€áıÿÿÿÿ8ÙÂ–×1J$863a5a1e-55f3-4ec1-827d-61979426a005
+c:S5276""<implicit conversion loses integer precision: 'int' to 'char'(Ê‡ìûÿÿÿÿ8©ø–×1J$5d332835-c3d9-4bc7-b5f4-54910001c195
+Öc:S819s"–call to undeclared library function 'strcat' with type 'char *(char *, const char *)'; ISO C99 and later do not support implicit function declarations(Œ²¤¯8”²ú€Œ2J$9ce966cf-ecd5-474e-9e7b-4e96ce065e4e
+Êc:S819®"„call to undeclared library function 'isalpha' with type 'int (int)'; ISO C99 and later do not support implicit function declarations(¡ÙÉÀüÿÿÿÿ8”²ú€Œ2J$d1dae65f-b710-4bed-af54-ceb4b32e24bc
+×c:S819ğ"–call to undeclared library function 'strcpy' with type 'char *(char *, const char *)'; ISO C99 and later do not support implicit function declarations(¬³Óá8”²ú€Œ2J$90cf3d3e-e2c7-49bf-aa31-ffe0fefff282
+¨c:S819ˆ"ccall to undeclared function 'atoi'; ISO C99 and later do not support implicit function declarations(Áİ½§ùÿÿÿÿ8”²ú€Œ2J$a02d5bc4-4cad-42d9-9ad2-2275550d8ac5
+¨c:S819¥"ccall to undeclared function 'atoi'; ISO C99 and later do not support implicit function declarations(˜µ„Ìşÿÿÿÿ8”²ú€Œ2J$30d94b78-a826-4d9d-bb91-49344ed74ee4
+¨c:S819¯"ccall to undeclared function 'atoi'; ISO C99 and later do not support implicit function declarations(˜µ„Ìşÿÿÿÿ8”²ú€Œ2J$64b3deea-50b7-4989-9acd-4abc11c432c0
+¨c:S819¹"ccall to undeclared function 'atoi'; ISO C99 and later do not support implicit function declarations(˜µ„Ìşÿÿÿÿ8”²ú€Œ2J$5b125b0d-f59e-4648-89d6-ef4d982ba6c1
+¨c:S819Ã"ccall to undeclared function 'atoi'; ISO C99 and later do not support implicit function declarations(˜µ„Ìşÿÿÿÿ8”²ú€Œ2J$addcc5dc-dfe8-40dc-9932-8af4b3d84003
+¨c:S819Ó"ccall to undeclared function 'atoi'; ISO C99 and later do not support implicit function declarations(˜µ„Ìşÿÿÿÿ8”²ú€Œ2J$6f26ee8f-1085-4d34-b07e-2385d9b2fb4a
+¨c:S819ô"ccall to undeclared function 'atoi'; ISO C99 and later do not support implicit function declarations(ÀÙ¨Áşÿÿÿÿ8”²ú€Œ2J$91dadec8-56ec-492c-80c3-ae0c8595256a
+âc:S819£"¡call to undeclared library function 'memset' with type 'void *(void *, int, unsigned long long)'; ISO C99 and later do not support implicit function declarations(“—±¥8”²ú€Œ2J$cbdfb84f-7927-4224-8ae8-907f83c1de6b
+™c:S3776"TRefactor this function to reduce its Cognitive Complexity from 29 to the 25 allowed.(¹Ü²şÿÿÿÿ8€½©ÖÕ1J$bffd0287-1308-4b86-8cf1-6329c3144778
+–c:S1912K"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ÄÿÏšıÿÿÿÿ8Å‹×ŸÕ1J$bc68b050-d3ba-46d3-903a-9e37bed6a3a3
+‘c:S1912N"QReplace this call to the non reentrant function "strtok" by a call to "strtok_r".(ù›à˜8Å‹×ŸÕ1J$c3649890-cd52-461b-8e60-4b75e5f071f1
+™c:S3776^"TRefactor this function to reduce its Cognitive Complexity from 36 to the 25 allowed.(øÈÛüÿÿÿÿ8éÂ–×1J$d2d5506d-f30c-4e80-804e-36563e014458
+c:S134ˆ"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(ß´™ª8áÌŒ×Õ1J$ac391e1c-c48f-474b-89c4-82f821969455
+•c:S3776î"TRefactor this function to reduce its Cognitive Complexity from 45 to the 25 allowed.(Ûâ8Ğ‹×ŸÕ1J$774bbf42-3389-4bcf-a291-21aa68d87117
+•c:S3776İ"TRefactor this function to reduce its Cognitive Complexity from 28 to the 25 allowed.(ºáÀ·8ûÂ–×1J$0c0721ea-3186-494f-bd09-0bebcd56312e
+šc:S3776½"TRefactor this function to reduce its Cognitive Complexity from 26 to the 25 allowed.(’Ÿ•²øÿÿÿÿ8áÌŒ×Õ1J$dcac20c8-795c-4300-9e7a-f69e1e0d429d
+’c:S134Ç"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(¬âİûÿÿÿÿ8áÌŒ×Õ1J$95ac3d75-92f3-4453-b4b8-934ad7abe230
+’c:S134Ë"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(¬âİûÿÿÿÿ8šìáøÕ1J$f927b26d-3d1c-4056-b60d-6ecdc03d19ee
+šc:S3776ó"TRefactor this function to reduce its Cognitive Complexity from 31 to the 25 allowed.(Êí•ıÿÿÿÿ8ì”Å¬Ö1J$557f9b59-3809-426a-94e0-24117a7704bd
+’c:S134"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(èâ»÷ıÿÿÿÿ8ì”Å¬Ö1J$ce4eb89f-d1a7-463b-ae41-6a4e54f4e2b6
+•c:S3776£"TRefactor this function to reduce its Cognitive Complexity from 31 to the 25 allowed.(ªå‡8šìáøÕ1J$ff2032bf-3fc5-4987-a2f5-fe7651ca09cf
+’c:S134©"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(°æáÓøÿÿÿÿ8³ Ñ£Ö1J$a5fb44cb-9e36-451e-bcea-4bbf5f6c4a4a
+’c:S134­"MRefactor this code to not nest more than 3 if|for|do|while|switch statements.(°æáÓøÿÿÿÿ8’Â–×1J$3e398fc1-6e69-4956-b9de-e177e26e26f0
+£c:S995ò"cMake the type of this parameter a pointer-to-const. The current type of "src" is "struct record *".(ÄŸÑ–8”µª—×1J$e10fa74d-668b-45cb-8b4d-fba86ed12ca8
+•c:S3776–"TRefactor this function to reduce its Cognitive Complexity from 73 to the 25 allowed.(ËûƒÍ8¤ìáøÕ1J$c6226200-bd62-48a9-a9be-6bf8c896f557
+8c:S125¥"Remove the commented out code.(¦ƒš§8„Òú€Œ2
+8c:S125¬"Remove the commented out code.(¦ƒš§8„Òú€Œ2
+8c:S125Â"Remove the commented out code.(¥‰è§8„Òú€Œ2
