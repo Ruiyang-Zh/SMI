@@ -1,3 +1,0 @@
-D:\Codespace\SDKs\C-Cpp\cmake-3.30.2-windows-x86_64\bin\cmake.exe -E rm -f CMakeFiles\SQL.dir/objects.a
-D:\Codespace\SDKs\C-Cpp\mingw64\bin\ar.exe qc CMakeFiles\SQL.dir/objects.a @CMakeFiles\SQL.dir\objects1.rsp
-D:\Codespace\SDKs\C-Cpp\mingw64\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\SQL.dir/objects.a -Wl,--no-whole-archive -o SQL.exe -Wl,--out-implib,libSQL.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\SQL.dir\linkLibs.rsp

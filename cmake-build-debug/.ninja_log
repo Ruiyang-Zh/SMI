@@ -1,7 +1,4 @@
-# ninja log v5
-774	2863	7286511572280101	SQL.exe	b13caae6c1761a49
-209	392	7287335383556771	smi.exe	a8cb03b5d95ff780
-177	475	7284040342629132	text.exe	ffc58c4093dd5106
-2	176	7284040339657862	CMakeFiles/text.dir/text.c.obj	1aacbd4e38fd51cd
-21	209	7287335381764621	CMakeFiles/smi.dir/smi.c.obj	82ec35ae49fd06ec
-2	121	7287335380885744	CMakeFiles/smi.dir/main.c.obj	6e26a47b4187410b
+# ninja log v6
+7	179	7464724586747973	CMakeFiles/main.dir/src/main.c.obj	8965d7d29c56d9b8
+24	221	7464724586918211	CMakeFiles/main.dir/src/smi.c.obj	9d8e45bc4da5d2dc
+221	408	7464724588882396	main.exe	a1304df25c8c2bce
