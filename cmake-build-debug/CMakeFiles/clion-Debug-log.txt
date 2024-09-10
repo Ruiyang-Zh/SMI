@@ -1,4 +1,0 @@
-D:\JetBrains\CLion\bin\cmake\win\x64\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=D:/JetBrains/CLion/bin/ninja/win/x64/ninja.exe -G Ninja -S D:\CLion\SQL -B D:\CLion\SQL\cmake-build-debug
--- Configuring done (3.9s)
--- Generating done (0.0s)
--- Build files have been written to: D:/CLion/SQL/cmake-build-debug
